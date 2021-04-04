@@ -1,40 +1,25 @@
 ---
-title: "Product"
-author: "Ruei-Hung Chen, Andrew Chew, Zhenyu Xuan, Elif Yurek"
-date: "29/03/2021"
+title: "One small change in transportation, one giant leap for the environment"
+author: "The (Green)Power Rangers: Ruei-Hung Chen, Andrew Chew, Zhenyu Xuan, Elif Yurek"
+date: "16/04/2021"
 output: html_document
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-sadfsdfsa
-## R Markdown
-Elif
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+<!-- Part 1 -->
+## Climate Change & CO^2^ 101
 
-```{r cars}
-summary(cars)
-```
+<!-- Part 2 -->
+## Unsustainable CO^2^ Emissions
 
-## Including Plots
+<!-- Part 3 -->
+## What's your "Contribution"?
 
-You can also embed plots, for example:sdkfaskdjfhakdhfkjh
+<!-- Part 4 -->
+## How can you help?
 
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
-
-## Part 1
-pdafkjhsdfhakfdsakj
-## Part 2
-
-## Part 3
-
-## Part 4
-
-## Part 5
+<!-- Conclusion -->
+## Flatten the curve!
