@@ -20,6 +20,27 @@ library(shiny)
 
 <!-- Part 1 -->
 ## Climate Change & CO^2^ 101
+data <- read_excel("global emission.2.xlsx")
+
+df <- data.frame(
+  x= data$`Sub-sector`,
+  y=data$`Share of global greenhouse gas emissions (%)`
+)
+df
+# Load required R packages
+install.packages('dplyr')
+install.packages('highcharter')
+library(dplyr)
+library(highcharter) 
+# Set highcharter options
+options(highcharter.theme = hc_theme_smpl(tooltip = list(valueDecimals = 2)))
+
+hc <- df %>%
+  hchart(
+    "pie", hcaes(x = x, y = y),
+    name = "CO2 Emissions"
+  )
+hc
 
 <!-- Part 2 -->
 ## Unsustainable CO^2^ Emissions
