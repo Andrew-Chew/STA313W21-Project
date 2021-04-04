@@ -20,6 +20,8 @@ library(shiny)
 
 <!-- Part 1 -->
 ## Climate Change & CO^2^ 101
+install.packages("readxl")
+library("readxl")
 data <- read_excel("global emission.2.xlsx")
 
 df <- data.frame(
