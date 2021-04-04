@@ -7,6 +7,15 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
+# Packages used.
+library(shiny)
+
+
+# Empty Shiny App template. 
+# ui <- fluidPage("")
+# server <- function(input, output) {}
+# shinyApp(ui = ui, server = server)
 ```
 
 <!-- Part 1 -->
