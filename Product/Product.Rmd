@@ -3,13 +3,23 @@ title: "One small change in transportation, one giant leap for the environment"
 author: "The (Green)Power Rangers: Ruei-Hung Chen, Andrew Chew, Zhenyu Xuan, Elif Yurek"
 date: "16/04/2021"
 output: html_document
+runtime: shiny
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
+# Install packages used if not already installed.
+if (!require("dplyr")) install.packages("dplyr")
+if (!require("ggplot2")) install.packages("ggplot2")
+if (!require("scales")) install.packages("scales")
+if (!require("shiny")) install.packages("shiny")
+
 # Packages used.
+library(dplyr)
+library(ggplot2)
 library(shiny)
+library(scales)
 
 
 # Empty Shiny App template. 
@@ -20,30 +30,88 @@ library(shiny)
 
 <!-- Part 1 -->
 ## Climate Change & CO^2^ 101
-data <- read_excel("global emission.2.xlsx")
+<!-- data <- read_excel("global emission.2.xlsx") -->
 
-df <- data.frame(
-  x= data$`Sub-sector`,
-  y=data$`Share of global greenhouse gas emissions (%)`
-)
-df
-# Load required R packages
-install.packages('dplyr')
-install.packages('highcharter')
-library(dplyr)
-library(highcharter) 
-# Set highcharter options
-options(highcharter.theme = hc_theme_smpl(tooltip = list(valueDecimals = 2)))
+<!-- df <- data.frame( -->
+<!--   x= data$`Sub-sector`, -->
+<!--   y=data$`Share of global greenhouse gas emissions (%)` -->
+<!-- ) -->
+<!-- df -->
+<!-- # Load required R packages -->
+<!-- install.packages('dplyr') -->
+<!-- install.packages('highcharter') -->
+<!-- library(dplyr) -->
+<!-- library(highcharter)  -->
+<!-- # Set highcharter options -->
+<!-- options(highcharter.theme = hc_theme_smpl(tooltip = list(valueDecimals = 2))) -->
 
-hc <- df %>%
-  hchart(
-    "pie", hcaes(x = x, y = y),
-    name = "CO2 Emissions"
-  )
-hc
+<!-- hc <- df %>% -->
+<!--   hchart( -->
+<!--     "pie", hcaes(x = x, y = y), -->
+<!--     name = "CO2 Emissions" -->
+<!--   ) -->
+<!-- hc -->
 
 <!-- Part 2 -->
 ## Unsustainable CO^2^ Emissions
+```{r part2 setup, include=FALSE}
+part2data <- read.csv("Data/owid-co2-data.csv")
+part2clean <- part2data[c('year', 'cumulative_co2')]
+
+co2emissions_widget = function(dataset) {
+
+  vars = names(dataset)
+
+  shinyApp(
+    ui = fluidPage(
+      fluidRow(
+        column(4, ),
+        plotOutput("co2emissions"),
+        column(4, )
+      ),
+      fluidRow(style = "padding-bottom: 20px;",
+               column(4, ),
+               column(4, sliderInput(inputId = "years",
+                    label = "Year Range:",
+                    min = 1750,
+                    max = 2019,
+                    value = c(1750, 2019),
+                    step = 1,
+                    width = "100%",
+                    sep = "",
+                    dragRange = TRUE)),
+               column(4, ))
+    ),
+
+    server = function(input, output, session) {
+      
+      # Selected data.
+      selected_data <- reactive({
+        dataset %>%
+          group_by(year) %>%
+          filter(year >= input$years[1] & year <= input$years[2]) %>%
+          summarise(cum = sum(cumulative_co2, na.rm = TRUE))
+      })
+#        dataset[dataset$year >= input$years[1] & dataset$year <= input$years[2],] %>% group_by(year)})
+      
+      # You can access the value of the widget with input$date, e.g.
+      output$co2emissions <- renderPlot({
+        ggplot(selected_data(), aes(x = year, y = cum / 1000)) +
+          geom_point() +
+          geom_path() +
+          scale_y_continuous("Billion Tons", labels = unit_format(scale = 1e-3)) +
+          theme_minimal()
+        },
+        height = 400,
+        width = 600)
+    },
+
+    options = list(height = 500)
+  )
+}
+
+co2emissions_widget(part2clean)
+```
 
 <!-- Part 3 -->
 ## What's your "Contribution"?
