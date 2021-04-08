@@ -55,19 +55,6 @@ hc <- df %>%
   )
 hc
 
-#new try of piechart 
-library(plotly)
-data <- read_excel("global emission.3.xlsx")
-piedata <- data.frame(
-  x= data$`Sub-sector`,
-  y=data$`Share of global greenhouse gas emissions (%)`
-)
-
-fig <- plot_ly(piedata, labels = ~x, values = ~y, type = 'pie')
-fig <- fig %>% layout(title = 'Global CO2 emissions by sector',
-         xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
-         yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
-fig
 
 
 =======
