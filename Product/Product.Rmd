@@ -57,15 +57,16 @@ hc
 
 #new try of piechart 
 library(plotly)
+data <- read_excel("global emission.3.xlsx")
+piedata <- data.frame(
+  x= data$`Sub-sector`,
+  y=data$`Share of global greenhouse gas emissions (%)`
+)
 
-USPersonalExpenditure <- data.frame("Categorie"=rownames(USPersonalExpenditure), USPersonalExpenditure)
-data <- USPersonalExpenditure[,c('Categorie', 'X1960')]
-
-fig <- plot_ly(data, labels = ~Categorie, values = ~X1960, type = 'pie')
-fig <- fig %>% layout(title = 'United States Personal Expenditures by Categories in 1960',
+fig <- plot_ly(piedata, labels = ~x, values = ~y, type = 'pie')
+fig <- fig %>% layout(title = 'Global CO2 emissions by sector',
          xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
          yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
-
 fig
 
 
