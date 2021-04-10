@@ -83,9 +83,9 @@ library(scales)
 
 <!-- Part 2 -->
 ## Unsustainable CO^2^ Emissions
-```{r part2 setup}
+```{r part2 setup, include=FALSE}
 part2data <- read.csv("Data/owid-co2-data.csv")
-part2clean <- part2data[c('country', 'year', 'cumulative_co2')]
+part2clean <- part2data[c("country", "year", "cumulative_co2", "cumulative_gas_co2")]
 
 co2emissions_widget = function(dataset) {
 
@@ -98,13 +98,27 @@ co2emissions_widget = function(dataset) {
         plotOutput("co2emissions"),
         column(4, )
       ),
+      
+      # View selector widget.
+      fluidRow(
+        column(4, ),
+        column(4, radioButtons(
+          inputId = "view",
+          label = "View:",
+          choices = list("Total" = 1, "Gas" = 2), 
+          selected = 1,
+          inline = TRUE)),
+        column(4, )
+      ),
 
       # Country selector widget.
       fluidRow(
         column(4, ),
-        column(4, selectInput("country", label = "Country:",
-               choices = c("All", unique(dataset$country)),
-               selected = "All")),
+        column(4, selectInput(
+          inputId = "country",
+          label = "Country:",
+          choices = c("All", unique(dataset$country)),
+          selected = "All")),
         column(4, )
       ),
       
@@ -112,53 +126,53 @@ co2emissions_widget = function(dataset) {
       fluidRow(
         style = "padding-bottom: 20px;",
         column(4, ),
-        column(4, sliderInput(inputId = "years",
-            label = "Year Range:",
-            min = 1750,
-            max = 2019,
-            value = c(1750, 2019),
-            step = 1,
-            width = "100%",
-            sep = "",
-            dragRange = TRUE)),
+        column(4, sliderInput(
+          inputId = "years",
+          label = "Year Range:",
+          min = 1750,
+          max = 2019,
+          value = c(1750, 2019),
+          step = 1,
+          width = "100%",
+          sep = "",
+          dragRange = TRUE)),
         column(4, ))
     ),
 
     server = function(input, output, session) {
       
-      # Selected data.
-      # reactive({
-      #   if (input$country == "All") {
-      #     selected_data <- reactive({
-      #     dataset[, c("year", "cumulative_co2")] %>%
-      #       group_by(year) %>%
-      #       filter(year >= input$years[1] & year <= input$years[2]) %>%
-      #       summarise(cum = sum(cumulative_co2, na.rm = TRUE))
-      #     })
-      #   }
-      #   else {
-      #     selected_data <- reactive({
-      #     dataset %>%
-      #       filter(country = input$country) %>%
-      #       group_by(year) %>%
-      #       filter(year >= input$years[1] & year <= input$years[2]) %>%
-      #       summarise(cum = sum(cumulative_co2, na.rm = TRUE))
-      #     })
-      #   }
-      # })
+      # Put together dataset based on user selections.
       selected_data <- reactive({
-        if (input$country == "All") {
+
+        columns <- c("year")
+        columns <- if (input$country != "ALL") c("country", columns) 
+        columns <- if (input$view == 1) c(columns, "cumulative_co2") else c(columns, "cumulative_gas_co2")
+
+        if (input$country == "All" & input$view == 1) {
           dataset[, c("year", "cumulative_co2")] %>%
             group_by(year) %>%
             filter(year >= input$years[1] & year <= input$years[2]) %>%
             summarise(cum = sum(cumulative_co2, na.rm = TRUE))
         }
-        else {
-          dataset %>%
+        else if (input$country == "All" & input$view == 2) {
+          dataset[, c("year", "cumulative_gas_co2")] %>%
+            group_by(year) %>%
+            filter(year >= input$years[1] & year <= input$years[2]) %>%
+            summarise(cum = sum(cumulative_gas_co2, na.rm = TRUE))
+        }
+        else if (input$country != "All" & input$view == 1) {
+          dataset[, columns] %>%
             filter(country == input$country) %>%
             group_by(year) %>%
             filter(year >= input$years[1] & year <= input$years[2]) %>%
             summarise(cum = sum(cumulative_co2, na.rm = TRUE))
+        }
+        else {
+          dataset[, columns] %>%
+            filter(country == input$country) %>%
+            group_by(year) %>%
+            filter(year >= input$years[1] & year <= input$years[2]) %>%
+            summarise(cum = sum(cumulative_gas_co2, na.rm = TRUE))
         }
       })
       
@@ -178,7 +192,9 @@ co2emissions_widget = function(dataset) {
     options = list(height = 500)
   )
 }
+```
 
+```{r part2, echo=FALSE}
 co2emissions_widget(part2clean)
 ```
 
