@@ -117,8 +117,8 @@ co2emissions_widget = function(dataset) {
         column(4, selectInput(
           inputId = "country",
           label = "Country:",
-          choices = c("All", unique(dataset$country)),
-          selected = "All")),
+          choices = unique(dataset$country),
+          selected = "World")),
         column(4, )
       ),
       
@@ -129,9 +129,10 @@ co2emissions_widget = function(dataset) {
         column(4, sliderInput(
           inputId = "years",
           label = "Year Range:",
-          min = 1750,
+          # Even though data since 1751 was provided, show data starting from 1900.
+          min = 1900,
           max = 2019,
-          value = c(1750, 2019),
+          value = c(1900, 2019),
           step = 1,
           width = "100%",
           sep = "",
@@ -143,32 +144,15 @@ co2emissions_widget = function(dataset) {
       
       # Put together dataset based on user selections.
       selected_data <- reactive({
-
-        columns <- c("year")
-        columns <- if (input$country != "ALL") c("country", columns) 
-        columns <- if (input$view == 1) c(columns, "cumulative_co2") else c(columns, "cumulative_gas_co2")
-
-        if (input$country == "All" & input$view == 1) {
-          dataset[, c("year", "cumulative_co2")] %>%
-            group_by(year) %>%
-            filter(year >= input$years[1] & year <= input$years[2]) %>%
-            summarise(cum = sum(cumulative_co2, na.rm = TRUE))
-        }
-        else if (input$country == "All" & input$view == 2) {
-          dataset[, c("year", "cumulative_gas_co2")] %>%
-            group_by(year) %>%
-            filter(year >= input$years[1] & year <= input$years[2]) %>%
-            summarise(cum = sum(cumulative_gas_co2, na.rm = TRUE))
-        }
-        else if (input$country != "All" & input$view == 1) {
-          dataset[, columns] %>%
+        if (input$view == 1) {
+            dataset[, c("country", "year", "cumulative_co2")] %>%
             filter(country == input$country) %>%
             group_by(year) %>%
             filter(year >= input$years[1] & year <= input$years[2]) %>%
             summarise(cum = sum(cumulative_co2, na.rm = TRUE))
         }
         else {
-          dataset[, columns] %>%
+            dataset[, c("country", "year", "cumulative_gas_co2")] %>%
             filter(country == input$country) %>%
             group_by(year) %>%
             filter(year >= input$years[1] & year <= input$years[2]) %>%
@@ -179,11 +163,12 @@ co2emissions_widget = function(dataset) {
       
       # You can access the value of the widget with input$date, e.g.
       output$co2emissions <- renderPlot({
-        ggplot(selected_data(), aes(x = year, y = cum / 1000)) +
+        ggplot(selected_data(), aes(x = year, y = cum)) +
           geom_point() +
           geom_path() +
-          scale_y_continuous("Billion Tons", labels = unit_format(scale = 1e-3)) +
-          theme_minimal()
+          geom_smooth()
+#          scale_y_continuous("Billion Tons", labels = unit_format(scale = 1e-3)) +
+#          theme_minimal()
         },
         height = 400,
         width = 600)
