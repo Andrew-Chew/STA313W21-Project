@@ -42,6 +42,9 @@ df <- data.frame(
   y=data$`Share of global greenhouse gas emissions (%)`) 
 df 
 
+df_transport <- df %>% slice(1:5)
+df_transport
+
 # Set highcharter options 
 options(highcharter.theme = hc_theme_smpl(tooltip = list(valueDecimals = 2))) 
 
@@ -51,7 +54,7 @@ highchart () %>%
     "pie",
     hcaes(
       x = x,
-      y = y
+      y = y,
       ),
     name = "CO2 emissions by %"
     )  %>%
@@ -63,7 +66,7 @@ highchart () %>%
       )) %>%
   hc_title(
     text = "Total Global CO2 Emissions by Sector in 2016"
-  ) 
+    ) 
 
 ```
 
