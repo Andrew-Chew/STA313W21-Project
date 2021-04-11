@@ -45,12 +45,26 @@ df
 # Set highcharter options 
 options(highcharter.theme = hc_theme_smpl(tooltip = list(valueDecimals = 2))) 
 
-hc <- df %>% 
-hchart(
-  "pie", hcaes(x = x, y = y), 
-  name = "CO2 Emissions" 
-) 
-hc 
+highchart () %>% 
+  hc_add_series(
+    df, 
+    "pie",
+    hcaes(
+      x = x,
+      y = y
+      ),
+    name = "CO2 emissions by %"
+    )  %>%
+  hc_plotOptions(
+    series = list(
+      showInLegend = FALSE,
+      pointFormat = "{point.y}%",
+      colorByPoint = TRUE
+      )) %>%
+  hc_title(
+    text = "Total Global CO2 Emissions by Sector in 2016"
+  ) 
+
 ```
 
 
