@@ -14,13 +14,16 @@ if (!require("dplyr")) install.packages("dplyr")
 if (!require("ggplot2")) install.packages("ggplot2")
 if (!require("scales")) install.packages("scales")
 if (!require("shiny")) install.packages("shiny")
+if (!require("readxl")) install.packages("readxl")
+if (!require("highcharter")) install.packages("highcharter")
 
 # Packages used.
 library(dplyr)
 library(ggplot2)
 library(shiny)
 library(scales)
-
+library("readxl")
+library(highcharter)
 
 # Empty Shiny App template. 
 # ui <- fluidPage("")
@@ -31,54 +34,33 @@ library(scales)
 <!-- Part 1 -->
 ## Climate Change & CO^2^ 101
 <!-- <<<<<<< HEAD -->
-<!-- install.packages("readxl") -->
-<!-- library("readxl") -->
-<!-- data <- read_excel("global emission.3.xlsx") -->
 
-<!-- df <- data.frame( -->
-<!--   x= data$`Sub-sector`, -->
-<!--   y=data$`Share of global greenhouse gas emissions (%)` -->
-<!-- ) -->
-<!-- df -->
-<!-- # Load required R packages -->
-<!-- install.packages('dplyr') -->
-<!-- install.packages('highcharter') -->
-<!-- library(dplyr) -->
-<!-- library(highcharter)  -->
-<!-- # Set highcharter options -->
-<!-- options(highcharter.theme = hc_theme_smpl(tooltip = list(valueDecimals = 2))) -->
+```{r}
+data <- read_excel("global emission.3.xlsx") 
+df <- data.frame( 
+  x= data$`Sub-sector`,
+  y=data$`Share of global greenhouse gas emissions (%)`) 
+df 
 
-<!-- hc <- df %>% -->
-<!--   hchart( -->
-<!--     "pie", hcaes(x = x, y = y), -->
-<!--     name = "CO2 Emissions" -->
-<!--   ) -->
-<!-- hc -->
+# Set highcharter options 
+options(highcharter.theme = hc_theme_smpl(tooltip = list(valueDecimals = 2))) 
+
+hc <- df %>% 
+hchart(
+  "pie", hcaes(x = x, y = y), 
+  name = "CO2 Emissions" 
+) 
+hc 
+```
+
+
+
+
 
 
 
 =======
-<!-- data <- read_excel("global emission.2.xlsx") -->
 
-<!-- df <- data.frame( -->
-<!--   x= data$`Sub-sector`, -->
-<!--   y=data$`Share of global greenhouse gas emissions (%)` -->
-<!-- ) -->
-<!-- df -->
-<!-- # Load required R packages -->
-<!-- install.packages('dplyr') -->
-<!-- install.packages('highcharter') -->
-<!-- library(dplyr) -->
-<!-- library(highcharter) -->
-<!-- # Set highcharter options -->
-<!-- options(highcharter.theme = hc_theme_smpl(tooltip = list(valueDecimals = 2))) -->
-
-<!-- hc <- df %>% -->
-<!--   hchart( -->
-<!--     "pie", hcaes(x = x, y = y), -->
-<!--     name = "CO2 Emissions" -->
-<!--   ) -->
-<!-- hc -->
 <!-- >>>>>>> fb7782ac83b51eb01196f3b294fbca85be9e9c0e -->
 
 <!-- Part 2 -->
