@@ -37,10 +37,10 @@ data <- read_excel("Data/global emission.3.xlsx")
 df <- data.frame( 
   x= data$`Sub-sector`,
   y=data$`Share of global greenhouse gas emissions (%)`) 
-df 
+#df 
 
 df_transport <- df %>% slice(1:5)
-df_transport
+#df_transport
 
 # Set highcharter options 
 options(highcharter.theme = hc_theme_smpl(tooltip = list(valueDecimals = 2))) 
@@ -211,11 +211,11 @@ car_production <- function(data){
           mutate(count = count/1000000)
       } else if (input$vehicle_type == 2){
         data %>% 
-          filter(Type != "Cars")
+          filter(Type == "Cars") %>%
           mutate(count = count/1000000)
       } else {
         data %>% 
-          filter(Type != "Commercial")
+          filter(Type == "Commercial") %>%
           mutate(count = count/1000000) 
       }
     })
