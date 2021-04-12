@@ -80,31 +80,46 @@ highchart () %>%
 <!-- Part 2 -->
 ## Unsustainable CO^2^ Emissions
 ```{r part2 setup, include=FALSE}
-part2data <- read.csv("Data/owid-co2-data.csv")
-part2clean <- part2data[c("country", "year", "cumulative_co2", "cumulative_gas_co2")]
+# Data for emissions.
+p2_emissions_data <- read.csv("Data/owid-co2-data.csv")
+p2_emissions_clean <- p2_emissions_data[c("country", "year", "cumulative_co2", "cumulative_gas_co2")]
 
-co2emissions_widget = function(dataset) {
+# Data for production.
+p2_production_data <- read_excel("Data/production.xlsx")
+p2_production_clean <- p2_production_data %>%
+  pivot_longer(-c(year), names_to = "Type", values_to = "count") %>% 
+  mutate(Type = fct_relevel(Type, "Total Vehicle", after = 2)) %>% 
+  group_by(Type)
 
-  vars = names(dataset)
-
+part2_widget = function(emissions_data, production_data) {
+  
   shinyApp(
     ui = fluidPage(
       fluidRow(
-        column(4, ),
-        plotOutput("co2emissions"),
-        column(4, )
+        # Plot output for emissions.
+        column(6, plotOutput("co2emissions")),
+        
+        # Plot output for production.
+        column(6, plotOutput("production"))
       ),
       
       # View selector widget.
       fluidRow(
-        column(4, ),
-        column(4, radioButtons(
+        # View selector for emissions.
+        column(6, radioButtons(
           inputId = "view",
           label = "View:",
           choices = list("Total" = 1, "Gas" = 2), 
           selected = 1,
           inline = TRUE)),
-        column(4, )
+        
+        # View selector for production.
+        column(6, radioButtons(
+          inputId = "vehicle_type",
+          label = "Total",
+          choices = list("Total" = 1, "Commercial" = 2, "Personal Vehicle"= 3),
+          selected = 1,
+          inline = TRUE))
       ),
 
       # Country selector widget.
@@ -113,7 +128,7 @@ co2emissions_widget = function(dataset) {
         column(4, selectInput(
           inputId = "country",
           label = "Country:",
-          choices = unique(dataset$country),
+          choices = unique(emissions_data$country),
           selected = "World")),
         column(4, )
       ),
@@ -138,17 +153,18 @@ co2emissions_widget = function(dataset) {
 
     server = function(input, output, session) {
       
+      # Emissions.
       # Put together dataset based on user selections.
-      selected_data <- reactive({
+      selected_emissions_data <- reactive({
         if (input$view == 1) {
-            dataset[, c("country", "year", "cumulative_co2")] %>%
+            emissions_data[, c("country", "year", "cumulative_co2")] %>%
             filter(country == input$country) %>%
             group_by(year) %>%
             filter(year >= input$years[1] & year <= input$years[2]) %>%
             summarise(cum = sum(cumulative_co2, na.rm = TRUE))
         }
         else {
-            dataset[, c("country", "year", "cumulative_gas_co2")] %>%
+            emissions_data[, c("country", "year", "cumulative_gas_co2")] %>%
             filter(country == input$country) %>%
             group_by(year) %>%
             filter(year >= input$years[1] & year <= input$years[2]) %>%
@@ -156,18 +172,46 @@ co2emissions_widget = function(dataset) {
         }
       })
       
-      
-      # You can access the value of the widget with input$date, e.g.
       output$co2emissions <- renderPlot({
-        ggplot(selected_data(), aes(x = year, y = cum)) +
+        ggplot(selected_emissions_data(), aes(x = year, y = cum)) +
           geom_point() +
           geom_path() +
-          geom_smooth()
-#          scale_y_continuous("Billion Tons", labels = unit_format(scale = 1e-3)) +
-#          theme_minimal()
-        },
-        height = 400,
-        width = 600)
+          geom_smooth() +
+          theme_wsj()
+        })
+#        height = 400,
+#        width = 600)
+      
+      # Production
+      # Put together dataset based on user selections.
+      selected_production_data <- reactive({
+        if (input$vehicle_type == 1){
+          production_data %>% 
+            filter(Type == "Total Vehicle") %>%
+            mutate(count = count/1000000)
+        } else if (input$vehicle_type == 2){
+          production_data %>% 
+            filter(Type != "Cars") %>%
+            mutate(count = count/1000000)
+        } else {
+          production_data %>% 
+            filter(Type != "Commercial") %>%
+            mutate(count = count/1000000) 
+        }
+      })
+    
+      # output plot 
+      output$production <- renderPlot({
+        selected_production_data() %>% 
+          ggplot(aes(x = year, y = count, colour = Type)) + 
+          geom_line(lwd = 1) +
+          labs(title = "Historical Vehicle Productions",
+             y = "Number of Vehicles (In millions)",
+             x = "Year") +
+          theme_wsj()
+          })
+#        height = 400,
+#        width = 600)
     },
 
     options = list(height = 500)
@@ -176,83 +220,84 @@ co2emissions_widget = function(dataset) {
 ```
 
 ```{r part2, echo=FALSE}
-co2emissions_widget(part2clean)
+# Run the widget for part 2.
+part2_widget(p2_emissions_clean, p2_production_clean)
 ```
 
 
 ```{r, part2, Vehicle Production}
-production_dat <- read_excel("Data/production.xlsx")
-production_clean <- production_dat %>% 
-  pivot_longer(-c(year), names_to = "Type", values_to = "count") %>% 
-  mutate(Type = fct_relevel(Type, "Total Vehicle", after = 2)) %>% 
-  group_by(Type)
-
-
-car_production <- function(data){
-  
-  # Setting up ui using radio Buttons 
-  shinyApp(ui =  fluidPage(
-    radioButtons(
-      inputId = "vehicle_type",
-      label = "Total",
-      choices = list("Total" = 1, "Commercial" = 2, "Personal Vehicle"= 3),
-      selected = 1,
-      inline = TRUE), 
-    plotOutput("product")
-    ),
-  
-   
-  server = function(input, output) {
-    # Select different datasets
-    new_dat <- reactive({
-      if (input$vehicle_type == 1){
-        data %>% 
-          filter(Type == "Total Vehicle") %>%
-          mutate(count = count/1000000)
-      } else if (input$vehicle_type == 2){
-        data %>% 
-          filter(Type != "Cars") %>%
-          mutate(count = count/1000000)
-      } else {
-        data %>% 
-          filter(Type != "Commercial") %>%
-          mutate(count = count/1000000) 
-      }
-    })
-    
-    # output plot 
-    output$product <- renderPlot({
-      
-      new_dat() %>% 
-        ggplot(aes(x = year, y = count, colour = Type)) + 
-        geom_line(lwd = 1) +
-        labs(title = "Historical Vehicle Productions",
-           y = "Number of Vehicles (In millions)",
-           x = "Year") +
-        theme_wsj()
-        },
-      height = 400,
-      width = 600)
-    })
-  
-}
+# production_dat <- read_excel("Data/production.xlsx")
+# production_clean <- production_dat %>% 
+#   pivot_longer(-c(year), names_to = "Type", values_to = "count") %>% 
+#   mutate(Type = fct_relevel(Type, "Total Vehicle", after = 2)) %>% 
+#   group_by(Type)
+# 
+# 
+# car_production <- function(data){
+#   
+#   # Setting up ui using radio Buttons 
+#   shinyApp(ui =  fluidPage(
+#     radioButtons(
+#       inputId = "vehicle_type",
+#       label = "Total",
+#       choices = list("Total" = 1, "Commercial" = 2, "Personal Vehicle"= 3),
+#       selected = 1,
+#       inline = TRUE), 
+#     plotOutput("product")
+#     ),
+#   
+#    
+#   server = function(input, output) {
+#     # Select different datasets
+#     new_dat <- reactive({
+#       if (input$vehicle_type == 1){
+#         data %>% 
+#           filter(Type == "Total Vehicle") %>%
+#           mutate(count = count/1000000)
+#       } else if (input$vehicle_type == 2){
+#         data %>% 
+#           filter(Type != "Cars") %>%
+#           mutate(count = count/1000000)
+#       } else {
+#         data %>% 
+#           filter(Type != "Commercial") %>%
+#           mutate(count = count/1000000) 
+#       }
+#     })
+#     
+#     # output plot 
+#     output$product <- renderPlot({
+#       
+#       new_dat() %>% 
+#         ggplot(aes(x = year, y = count, colour = Type)) + 
+#         geom_line(lwd = 1) +
+#         labs(title = "Historical Vehicle Productions",
+#            y = "Number of Vehicles (In millions)",
+#            x = "Year") +
+#         theme_wsj()
+#         },
+#       height = 400,
+#       width = 600)
+#     })
+#   
+# }
 
 ```
 
 
 
 ```{r}
-production_clean %>% 
-  filter(Type != "Cars") %>% 
-  mutate(count = count/1000000) %>% 
-  ggplot(aes(x = year, y = count, colour = Type))+ 
-  geom_line()
+# production_clean %>% 
+#   filter(Type != "Cars") %>% 
+#   mutate(count = count/1000000) %>% 
+#   ggplot(aes(x = year, y = count, colour = Type))+ 
+#   geom_line()
 
 ```
 
 
 ```{r}
-car_production(production_clean)
+# car_production(production_clean)
 ```
 
 
