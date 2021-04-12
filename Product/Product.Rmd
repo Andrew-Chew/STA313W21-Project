@@ -22,8 +22,12 @@ library(dplyr)
 library(ggplot2)
 library(shiny)
 library(scales)
-library("readxl")
-library(highcharter)
+library(readxl)
+library(ggthemes)
+library(tidyr)
+library(forcats)
+
+
 
 # Empty Shiny App template. 
 # ui <- fluidPage("")
@@ -182,6 +186,81 @@ co2emissions_widget = function(dataset) {
 co2emissions_widget(part2clean)
 ```
 
+
+```{r, part2, Vehicle Production}
+production_dat <- read_excel("Data/production.xlsx")
+production_clean <- production_dat %>% 
+  pivot_longer(-c(year), names_to = "Type", values_to = "count") %>% 
+  mutate(Type = fct_relevel(Type, "Total Vehicle", after = 2)) %>% 
+  group_by(Type)
+
+
+car_production <- function(data){
+  
+  # Setting up ui using radio Buttons 
+  shinyApp(ui =  fluidPage(
+    radioButtons(
+      inputId = "vehicle_type",
+      label = "Total",
+      choices = list("Total" = 1, "Commercial" = 2, "Personal Vehicle"= 3),
+      selected = 1,
+      inline = TRUE), 
+    plotOutput("product")
+    ),
+  
+   
+  server = function(input, output) {
+    # Select different datasets
+    new_dat <- reactive({
+      if (input$vehicle_type == 1){
+        data %>% 
+          filter(Type == "Total Vehicle") %>%
+          mutate(count = count/1000000)
+      } else if (input$vehicle_type == 2){
+        data %>% 
+          filter(Type != "Cars")
+          mutate(count = count/1000000)
+      } else {
+        data %>% 
+          filter(Type != "Commercial")
+          mutate(count = count/1000000) 
+      }
+    })
+    
+    # output plot 
+    output$product <- renderPlot({
+      
+      new_dat() %>% 
+        ggplot(aes(x = year, y = count, colour = Type)) + 
+        geom_line(lwd = 1) +
+        labs(title = "Historical Vehicle Productions",
+           y = "Number of Vehicles (In millions)",
+           x = "Year") +
+        theme_wsj()
+        },
+      height = 400,
+      width = 600)
+    })
+  
+}
+
+```
+
+
+
+```{r}
+production_clean %>% 
+  filter(Type != "Cars") %>% 
+  mutate(count = count/1000000) %>% 
+  ggplot(aes(x = year, y = count, colour = Type))+ 
+  geom_line()
+
+```
+
+
+```{r}
+car_production(production_clean)
+```
 
 
 
