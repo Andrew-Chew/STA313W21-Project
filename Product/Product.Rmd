@@ -40,7 +40,7 @@ library(forcats)
 <!-- <<<<<<< HEAD -->
 
 ```{r}
-data <- read_excel("Product/Data/global emission.3.xlsx") 
+data <- read_excel("Data/global emission.3.xlsx") 
 df <- data.frame( 
   x= data$`Sub-sector`,
   y=data$`Share of global greenhouse gas emissions (%)`) 
