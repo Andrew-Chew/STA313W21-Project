@@ -211,11 +211,11 @@ car_production <- function(data){
           mutate(count = count/1000000)
       } else if (input$vehicle_type == 2){
         data %>% 
-          filter(Type == "Cars") %>%
+          filter(Type != "Cars") %>%
           mutate(count = count/1000000)
       } else {
         data %>% 
-          filter(Type == "Commercial") %>%
+          filter(Type != "Commercial") %>%
           mutate(count = count/1000000) 
       }
     })
