@@ -18,6 +18,7 @@ library(ggplot2)
 library(ggthemes)
 library(highcharter)
 library(readxl)
+library(scales)
 library(shiny)
 library(shinythemes)
 library(scales)
@@ -107,19 +108,20 @@ part2_widget = function(emissions_data, production_data) {
       
       fluidRow(
         # Type selector for emissions.
-        column(4, radioButtons(
+        column(3, radioButtons(
           inputId = "type",
           label = "Type:",
-          choices = list("Total" = "sumt", "Gas" = "sumg"),
-          selected = "sumt",
+          choices = list("Total" = "Total", "Gas" = "Gas"),
+          selected = "Total",
           inline = TRUE)),
         
-        # Show both for comparison selector for emissions.
-        column(2, checkboxInput(
-          inputId = "showBoth",
-          label = "Show Both:",
-          value = TRUE
-        )),
+        # View selector for emissions.
+        column(3, radioButtons(
+          inputId = "view",
+          label = "View:",
+          choices = list("Annual" = "Annual", "Cumulative" = "Cumulative"),
+          selected = "Annual",
+          inline = TRUE)),
         
         # View selector for production.
         column(6, radioButtons(
@@ -131,25 +133,32 @@ part2_widget = function(emissions_data, production_data) {
       ),
       
       fluidRow(
-        # View selector for emissions.
-        column(6, radioButtons(
-          inputId = "view",
-          label = "View:",
-          choices = list("Annual" = 1, "Cumulative" = 2),
-          selected = 1,
-          inline = TRUE)),
-        column(6, )
-      ),
-
-      # Country selector widget.
-      fluidRow(
-        column(6, selectInput(
+        # Show both for comparison selector for emissions.
+        column(3, checkboxInput(
+          inputId = "showBoth",
+          label = "Show Both (For Comparison)",
+          value = TRUE
+        )),
+        
+        # Country selector for emissions.
+        column(3, selectInput(
           inputId = "country",
           label = "Country:",
           choices = unique(emissions_data$country),
           selected = "World")),
+        
         column(6, )
       ),
+
+      # # Country selector widget.
+      # fluidRow(
+      #   column(6, selectInput(
+      #     inputId = "country",
+      #     label = "Country:",
+      #     choices = unique(emissions_data$country),
+      #     selected = "World")),
+      #   column(6, )
+      # ),
       
       # Year range slider widget.
       fluidRow(
@@ -173,13 +182,13 @@ part2_widget = function(emissions_data, production_data) {
       # Put together dataset based on user selections.
       selected_emissions_data <- reactive({
         # Annual.
-        if (input$view == 1) {
+        if (input$view == "Annual") {
           emissions_data %>%
             filter(country == input$country) %>%
             group_by(year) %>%
             filter(year >= input$years[1] & year <= input$years[2]) %>%
-            summarise(sumt = sum(co2, na.rm = TRUE),
-                      sumg = sum(gas_co2, na.rm = TRUE))
+            summarise(Total = sum(co2, na.rm = TRUE),
+                      Gas = sum(gas_co2, na.rm = TRUE))
         }
         
         # Cumulative.
@@ -188,8 +197,8 @@ part2_widget = function(emissions_data, production_data) {
             filter(country == input$country) %>%
             group_by(year) %>%
             filter(year >= input$years[1] & year <= input$years[2]) %>%
-            summarise(sumt = sum(cumulative_co2, na.rm = TRUE),
-                      sumg = sum(cumulative_gas_co2, na.rm = TRUE))
+            summarise(Total = sum(cumulative_co2, na.rm = TRUE),
+                      Gas = sum(cumulative_gas_co2, na.rm = TRUE))
         }
       })
       
@@ -197,17 +206,49 @@ part2_widget = function(emissions_data, production_data) {
       selected_emissions_plot <- reactive({
         if (input$showBoth == TRUE) {
           ggplot(selected_emissions_data(), aes(x = year)) +
-                  geom_point(aes(y = sumt), colour = "#d95f02") +
-                  geom_point(aes(y = sumg), colour = "#7570b3") +
-                  geom_path(aes(y = sumt), colour = "#d95f02") +
-                  geom_path(aes(y = sumg), colour = "#7570b3") +
-                  theme_wsj()
+            geom_point(aes(y = Total, colour = "Total")) +
+            geom_point(aes(y = Gas, colour = "Gas")) +
+            geom_path(aes(y = Total, colour = "Total")) +
+            geom_path(aes(y = Gas, colour = "Gas")) +
+            geom_rect(aes(xmin = 2007.5, xmax = 2009.5, ymin = 0, ymax = Inf), alpha = 0.01, fill = "red") +
+            geom_text(aes(x = 2008.5, y = max(selected_emissions_data()$Total * 0.45), label = "Financial Crisis"), size = 3) +
+            geom_rect(aes(xmin = 2018.5, xmax = 2020, ymin = 0, ymax = Inf), alpha = 0.01, fill = "red") +
+            geom_text(aes(x = 2019, y = max(selected_emissions_data()$Total * 0.65), label = "COVID-19"), size = 3) +
+            scale_color_manual("",
+                               breaks = c("Total", "Gas"),
+                               values = c("#d95f02", "#7570b3")) +
+            xlim(min(selected_emissions_data()$year), max(selected_emissions_data()$year) + 1) +
+            labs(title = paste(input$view, "Carbon Dioxide Emissions"),
+                 x = "Year",
+                 y = expression(paste("CO"^"2", " Emissions (million tonnes)")),
+                 caption = "Data source: https://github.com/owid/co2-data") +
+            theme_wsj() + 
+            theme(plot.title = element_text(size = rel(0.65), hjust = 0.5),
+                  plot.caption = element_text(size = rel(0.35)),
+                  axis.title = element_text(size = rel(0.5)),
+                  legend.position = "top",
+                  legend.justification = "center")
         }
         else {
           ggplot(selected_emissions_data(), aes(x = year)) +
-                  geom_point(aes_string(y = input$type)) +
-                  geom_path(aes_string(y = input$type)) +
-                  theme_wsj()
+            geom_point(aes_string(y = input$type)) +
+            geom_path(aes_string(y = input$type)) +
+            geom_rect(aes(xmin = 2007.5, xmax = 2009.5, ymin = min(selected_emissions_data()[[input$type]]) * 0.95, ymax = Inf), alpha = 0.01, fill = "red") +
+            geom_text(aes(x = 2008.5, y = min(selected_emissions_data()[[input$type]] * 1.05), label = "Financial Crisis"), size = 3) +
+            geom_rect(aes(xmin = 2018.5, xmax = 2020, ymin = min(selected_emissions_data()[[input$type]]) * 0.95, ymax = Inf), alpha = 0.01, fill = "red") +
+            geom_text(aes(x = 2019, y = min(selected_emissions_data()[[input$type]] * 1.15), label = "COVID-19"), size = 3) +
+            xlim(min(selected_emissions_data()$year), max(selected_emissions_data()$year) + 1) +
+            ylim(min(selected_emissions_data()[[input$type]]) * 0.95, max(selected_emissions_data()[[input$type]]) * 1.05) +
+            labs(title = paste(input$view, "Carbon Dioxide Emissions"),
+                 subtitle = paste(input$type),
+                 x = "Year",
+                 y = expression(paste("CO"^"2", " Emissions (million tonnes)")),
+                 caption = "Data source: https://github.com/owid/co2-data") +
+            theme_wsj() +
+            theme(plot.title = element_text(size = rel(0.65), hjust = 0.5),
+                  plot.subtitle = element_text(size = rel(0.5), hjust = 0.5),
+                  plot.caption = element_text(size = rel(0.35)),
+                  axis.title = element_text(size = rel(0.5)))
         }
       })
 
@@ -235,11 +276,13 @@ part2_widget = function(emissions_data, production_data) {
       # Production plot 
       output$production <- renderPlot({
         selected_production_data() %>% 
-          ggplot(aes(x = year, y = count, colour = Type)) + 
+          ggplot(aes(x = year, y = count, colour = Type)) +
+          scale_color_discrete(limits = c("#d95f02", "#7570b3")) +
           geom_line(lwd = 1) +
           labs(title = "Historical Vehicle Productions",
              y = "Number of Vehicles (In millions)",
              x = "Year") +
+          geom_rect(aes(xmin = 2008, xmax = 2009, ymin = 0, ymax = Inf), alpha = 0.01, fill = "red", colour = NA) +
           theme_wsj()
           })
     },
