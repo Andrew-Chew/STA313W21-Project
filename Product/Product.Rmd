@@ -23,6 +23,8 @@ library(shiny)
 library(shinythemes)
 library(scales)
 library(tidyr)
+library(imager)
+
 
 # Empty Shiny App template. 
 # ui <- fluidPage("")
@@ -105,6 +107,12 @@ transport_pie
 Many people own cars in Canada. Did you know that the average Canadian vehicle, which burns 2 000 L of gasoline every year, releases about 4 600 kg of CO2 into the atmosphere (according to Natural Resources Canada)? 
 This number might not mean much to you. So let's see how many trees are working to absorb our emissions. 
 According to US Department of Agriculture, in one year a mature tree will absorb more than 48 pounds (roughly 22 kg) of CO2 from the atmosphere and release oxygen in exchange. 209 trees work to absorb just 1 average vehicle's CO2 emissions. 
+
+```{r, figures-side, fig.show="hold", out.width="50%"}
+
+plot(Product/www/treesncar.png)
+
+```
 
 
 
