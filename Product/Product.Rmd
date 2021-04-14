@@ -477,7 +477,7 @@ ui <- fluidPage(
                  label = "Second Vehicle:",
                  choices = list("airplane" = 1, "Medium Car (petrol)" = 2, "National Rail" = 3, "Medium Electrical Vehicle" = 4, "Coach" = 5), 
                  selected = 1)),
-  mainPanel(
+  fluidRow(
     # Use imageOutput to place the image on the page
     imageOutput("myImage")
     )
@@ -488,38 +488,99 @@ server <- function(input, output){
   temp_input <- reactive({c(input$first_vehicle, input$second_vehicle)})
   
   output$myimage <- renderImage({
-    if (temp_input == c(1,1)){
+    if (identical(temp_input(), c(1,1))){
       return(list(
         src = "www/f_vs_f.png",
         filetype = "image/png",
         alt = "Flight vs Flight"
       ))
-    } else if (temp_input == c(2,2)){
+    } else if (identical(temp_input() == c(2,2))){
       return(list(
         src = "www/car_vs_car.png",
         filetype = "image/png",
         alt = "Car vs Car"
       ))
-    } else if (temp_input == c(3,3)){
+    } else if (identical(temp_input() == c(3,3))){
       return(list(
         src = "www/train_vs_train.png",
         filetype = "image/png",
         alt = "Train vs Train"
       ))
-    } else if (temp_input == c(4,4)){
+    } else if (identical(temp_input() == c(4,4))){
       return(list(
         src = "www/EV_vs_EV.png",
         filetype = "image/png",
         alt = "EV vs EV"
       ))
-    } else if (temp_input == c(5,5)){
+    } else if (identical(temp_input() == c(5,5))){
       return(list(
         src = "www/bus_vs_bus.png",
         filetype = "image/png",
         alt = "bus vs bus"
       ))
+    } else if (identical(temp_input() == c(1,2)| team_input() == c(1,2))){
+      return(list(
+        src = "www/car_vs_flight.png",
+        filetype = "image/png",
+        alt = "car vs flight"
+      ))
+    } else if (identical(temp_input() == c(1,3)| temp_input() == c(3,1))){
+      return(list(
+        src = "www/train_vs_flight.png",
+        filetype = "image/png",
+        alt = "train vs flight"
+      ))
+    } else if (identical(temp_input() == c(1,4)| temp_input() == c(4,1))){
+      return(list(
+        src = "www/EV_vs_flight.png",
+        filetype = "image/png",
+        alt = "flight vs EV"
+      ))
+    } else if (identical(temp_input() == c(2,3)| temp_input()== c(3,2))){
+      return(list(
+        src = "www/car_vs_train.png",
+        filetype = "image/png",
+        alt = "car vs train"
+      ))
+    } else if (identical(temp_input()== c(2,4)| temp_input() == c(4,2))){
+      return(list(
+        src = "www/car_vs_EV.png",
+        filetype = "image/png",
+        alt = "car vs EV"
+      ))
+    } else if (identical(temp_input() == c(3,4) | temp_input()== c(4,3))){
+      return(list(
+        src = "www/train_vs_EV.png",
+        filetype = "image/png",
+        alt = "train vs EV"
+      ))
+      
+    } else if (identical(temp_input() == c(1,5)| temp_input()== c(5,1))){
+      return(list(
+        src = "www/bus_vs_flight.png",
+        filetype = "image/png",
+        alt = "bus vs flight"
+      ))
+    } else if (identical(temp_input) == c(2,5)| temp_input() == c(5,2)){
+      return(list(
+        src = "www/bus_vs_car.png",
+        filetype = "image/png",
+        alt = "bus vs car"
+      ))
+    } else if (identical(temp_input) == c(3,5)| temp_input() == c(5,3)){
+      return(list(
+        src = "www/bus_vs_train.png",
+        filetype = "image/png",
+        alt = "bus vs train"
+      ))
+    } else if (identical(temp_input) == c(4,5)| temp_input() == c(5,4)){
+      return(list(
+        src = "www/bus_vs_EV.png",
+        filetype = "image/png",
+        alt = "bus vs EV"
+      ))
     }
-  })
+  }, deleteFile = FALSE)
 }
 
 shinyApp(ui = ui, server = server)
