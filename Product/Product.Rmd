@@ -162,8 +162,8 @@ part2_widget = function(emissions_data, production_data) {
         column(6, radioButtons(
           inputId = "vehicle_type",
           label = "Type:",
-          choices = list("Total" = 1, "Commercial" = 2, "Personal Vehicle"= 3),
-          selected = 1,
+          choices = list("Total" = "Total", "Commercial" = "Commercial", "Cars"= "Cars"),
+          selected = "Total",
           inline = TRUE))
       ),
       
@@ -182,7 +182,14 @@ part2_widget = function(emissions_data, production_data) {
           choices = unique(emissions_data$country),
           selected = "World")),
         
-        column(6, )
+        # Show both for comparison selector for production.
+        column(3, checkboxInput(
+          inputId = "showAll",
+          label = "Show All (For Comparison)",
+          value = TRUE
+        )),
+        
+        column(3, )
       ),
       
       # Year range slider widget.
@@ -229,16 +236,21 @@ part2_widget = function(emissions_data, production_data) {
       
       # Put together plot based on user selections.
       selected_emissions_plot <- reactive({
+        # Show both.
         if (input$showBoth == TRUE) {
           ggplot(selected_emissions_data(), aes(x = year)) +
             geom_point(aes(y = Total, colour = "Total")) +
             geom_point(aes(y = Gas, colour = "Gas")) +
             geom_path(aes(y = Total, colour = "Total")) +
             geom_path(aes(y = Gas, colour = "Gas")) +
-            geom_rect(aes(xmin = 2007.5, xmax = 2009.5, ymin = 0, ymax = Inf), alpha = 0.01, fill = "red") +
-            geom_text(aes(x = 2008.5, y = max(selected_emissions_data()$Total * 0.45), label = "Financial Crisis"), size = 3) +
-            geom_rect(aes(xmin = 2018.5, xmax = 2020, ymin = 0, ymax = Inf), alpha = 0.01, fill = "red") +
-            geom_text(aes(x = 2019, y = max(selected_emissions_data()$Total * 0.65), label = "COVID-19"), size = 3) +
+            geom_rect(data = emissions_data[1, ],
+                      aes(xmin = 2007.5, xmax = 2009.5, ymin = 0, ymax = Inf), alpha = 0.25, fill = "red") +
+            geom_text(data = emissions_data[1, ],
+                      aes(x = 2008.5, y = max(selected_emissions_data()$Total * 0.45), label = "Financial Crisis"), size = 3) +
+            geom_rect(data = emissions_data[1, ],
+                      aes(xmin = 2018.5, xmax = 2020, ymin = 0, ymax = Inf), alpha = 0.25, fill = "red") +
+            geom_text(data = emissions_data[1, ],
+                      aes(x = 2019.25, y = max(selected_emissions_data()$Total * 0.65), label = "COVID-19"), size = 3) +
             scale_color_manual("",
                                breaks = c("Total", "Gas"),
                                values = c("#d95f02", "#7570b3")) +
@@ -254,14 +266,19 @@ part2_widget = function(emissions_data, production_data) {
                   legend.position = "top",
                   legend.justification = "center")
         }
+        # Show one.
         else {
           ggplot(selected_emissions_data(), aes(x = year)) +
             geom_point(aes_string(y = input$type)) +
             geom_path(aes_string(y = input$type)) +
-            geom_rect(aes(xmin = 2007.5, xmax = 2009.5, ymin = min(selected_emissions_data()[[input$type]]) * 0.95, ymax = Inf), alpha = 0.01, fill = "red") +
-            geom_text(aes(x = 2008.5, y = min(selected_emissions_data()[[input$type]] * 1.05), label = "Financial Crisis"), size = 3) +
-            geom_rect(aes(xmin = 2018.5, xmax = 2020, ymin = min(selected_emissions_data()[[input$type]]) * 0.95, ymax = Inf), alpha = 0.01, fill = "red") +
-            geom_text(aes(x = 2019, y = min(selected_emissions_data()[[input$type]] * 1.15), label = "COVID-19"), size = 3) +
+            geom_rect(data = emissions_data[1, ],
+                      aes(xmin = 2007.5, xmax = 2009.5, ymin = min(selected_emissions_data()[[input$type]]) * 0.95, ymax = Inf), alpha = 0.25, fill = "red") +
+            geom_text(data = emissions_data[1, ],
+                      aes(x = 2008.5, y = min(selected_emissions_data()[[input$type]] * 1.05), label = "Financial Crisis"), size = 3) +
+            geom_rect(data = emissions_data[1, ],
+                      aes(xmin = 2018.5, xmax = 2020, ymin = min(selected_emissions_data()[[input$type]]) * 0.95, ymax = Inf), alpha = 0.25, fill = "red") +
+            geom_text(data = emissions_data[1, ],
+                      aes(x = 2019.25, y = min(selected_emissions_data()[[input$type]] * 1.15), label = "COVID-19"), size = 3) +
             xlim(min(selected_emissions_data()$year), max(selected_emissions_data()$year) + 1) +
             ylim(min(selected_emissions_data()[[input$type]]) * 0.95, max(selected_emissions_data()[[input$type]]) * 1.05) +
             labs(title = paste(input$view, "Carbon Dioxide Emissions"),
@@ -283,44 +300,81 @@ part2_widget = function(emissions_data, production_data) {
       # Production
       # Put together dataset based on user selections.
       selected_production_data <- reactive({
-        if (input$vehicle_type == 1){
+        if (input$vehicle_type == "Total"){
           production_data %>% 
             filter(Type == "Total Vehicle") %>%
             mutate(count = count/1000000)
-        } else if (input$vehicle_type == 2){
+        } else if (input$vehicle_type == "Commercial"){
           production_data %>% 
-            filter(Type != "Cars") %>%
+            filter(Type == "Commercial") %>%
             mutate(count = count/1000000)
         } else {
           production_data %>% 
-            filter(Type != "Commercial") %>%
+            filter(Type == "Cars") %>%
             mutate(count = count/1000000) 
         }
       })
-    
-      # Production plot.
-      output$production <- renderPlot({
-        selected_production_data() %>% 
-          ggplot(aes(x = year, y = count, colour = Type)) +
-          scale_color_manual(values = c("#d95f02", "#7570b3")) +
-          geom_line(lwd = 1) +
-          geom_rect(aes(xmin = 2007.5, xmax = 2009.5, ymin = min(selected_emissions_data()[[input$type]]) * 0.95, ymax = Inf), alpha = 0.01, fill = "red") +
-          geom_text(aes(x = 2008.5, y = min(selected_emissions_data()[[input$type]] * 1.05), label = "Financial Crisis"), size = 3) +
-          geom_rect(aes(xmin = 2018.5, xmax = 2020, ymin = min(selected_emissions_data()[[input$type]]) * 0.95, ymax = Inf), alpha = 0.01, fill = "red") +
-          geom_text(aes(x = 2019, y = min(selected_emissions_data()[[input$type]] * 1.15), label = "COVID-19"), size = 3) +
-          xlim(2000, 2020) +
-          ylim(min(selected_production_data()$count * 0.95), max(selected_production_data()$count * 1.05)) +
-          labs(title = "Annual Vehicle Production",
+      
+      # Put together plot based on user selections.
+      selected_production_plot <- reactive({
+        # Show all.
+        if (input$showAll == TRUE) {
+          ggplot(production_data, aes(x = year, y = count / 1000000, colour = Type)) +
+            geom_point() +
+            geom_path() +
+            geom_rect(data = production_data[1, ],
+                      aes(xmin = 2007.5, xmax = 2009.5, ymin = 0, ymax = Inf), alpha = 0.25, fill = "red", color = NA) +
+            geom_text(data = production_data[1, ],
+                      aes(x = 2008.5, y = max(production_data$count / 1000000 * 0.45), label = "Financial Crisis"), size = 3, color = "black") +
+            geom_rect(data = production_data[1, ],
+                      aes(xmin = 2018.5, xmax = 2020, ymin = 0, ymax = Inf), alpha = 0.25, fill = "red", color = NA) +
+            geom_text(data = production_data[1, ],
+                      aes(x = 2019.25, y = max(production_data$count / 1000000 * 0.65), label = "COVID-19"), size = 3, color = "black") +
+            scale_color_manual("",
+                               breaks = c("Commercial", "Total Vehicle", "Cars"),
+                               values = c("#1b9e77", "#d95f02", "#7570b3")) +
+            xlim(2000, 2020) +
+            labs(title = "Annual Vehicle Production",
+                 x = "Year",
+                 y = "Vehicles Produced (millions)",
+                 caption = "Data source: https://www.oica.net/category/production-statistics/") +
+            theme_wsj() + 
+            theme(plot.title = element_text(size = rel(0.65), hjust = 0.5),
+                  plot.caption = element_text(size = rel(0.35)),
+                  axis.title = element_text(size = rel(0.5)),
+                  legend.position = "top",
+                  legend.justification = "center")
+        }
+        # Show one.
+        else {
+          ggplot(selected_production_data(), aes(x = year, y = count)) +
+            geom_point() +
+            geom_path() +
+            geom_rect(data = production_data[1, ],
+                      aes(xmin = 2007.5, xmax = 2009.5, ymin = min(selected_production_data()$count) * 0.95, ymax = Inf), alpha = 0.25, fill = "red", color = NA) +
+            geom_text(data = production_data[1, ],
+                      aes(x = 2008.5, y = min(selected_production_data()$count * 1.05), label = "Financial Crisis"), size = 3, color = "black") +
+            geom_rect(data = production_data[1, ],
+                      aes(xmin = 2018.5, xmax = 2020, ymin = min(selected_production_data()$count) * 0.95, ymax = Inf), alpha = 0.25, fill = "red", color = NA) +
+            geom_text(data = production_data[1, ],
+                      aes(x = 2019.25, y = min(selected_production_data()$count * 1.15), label = "COVID-19"), size = 3, color = "black") +
+            xlim(2000, 2020) +
+            ylim(min(selected_production_data()$count) * 0.95, max(selected_production_data()$count) * 1.05) +
+            labs(title = "Annual Vehicle Production",
                  subtitle = paste(input$vehicle_type),
                  x = "Year",
                  y = "Vehicles Produced (millions)",
                  caption = "Data source: https://www.oica.net/category/production-statistics/") +
-          theme_wsj() +
-          theme(plot.title = element_text(size = rel(0.65), hjust = 0.5),
-                plot.subtitle = element_text(size = rel(0.5), hjust = 0.5),
-                plot.caption = element_text(size = rel(0.35)),
-                axis.title = element_text(size = rel(0.5)))
-          })
+            theme_wsj() +
+            theme(plot.title = element_text(size = rel(0.65), hjust = 0.5),
+                  plot.subtitle = element_text(size = rel(0.5), hjust = 0.5),
+                  plot.caption = element_text(size = rel(0.35)),
+                  axis.title = element_text(size = rel(0.5)))
+        }
+      })
+      
+      # Production plot.
+      output$production <- renderPlot({selected_production_plot()})
     },
 
     options = list(height = 500)
