@@ -468,23 +468,32 @@ legend("topleft", legend = c("car","train","flight","motorcycle","bus","subway",
 ```{r}
 ui <- fluidPage(
   fluidRow(
+    # setting up radio buttons in UI
     radioButtons(inputId = "first_vehicle", 
                  label = "First Vehicle:",
                  choices =  list("airplane" = 1, "Medium Car (petrol)" = 2, "National Rail" = 3, "Medium Electrical Vehicle" = 4, "Coach" = 5),
+                 inline = TRUE,
                  selected = 1)),
+  
+  # setting up the radio butons for the second vehicle for comparison
   fluidRow(
     radioButtons(inputId = "second_vehicle",
                  label = "Second Vehicle:",
                  choices = list("airplane" = 1, "Medium Car (petrol)" = 2, "National Rail" = 3, "Medium Electrical Vehicle" = 4, "Coach" = 5), 
+                 inline = TRUE, 
                  selected = 1)),
+  
+  # setting up imageOutput in the UI 
   fluidRow(
     # Use imageOutput to place the image on the page
-    imageOutput("myImage")
-    )
+    imageOutput("myImage"),
+    ),
 )
 
-server <- function(input, output){
-  # save the 2 inputs in a vector
+
+
+server <- function(input, output, session){
+  # save the 2 inputs in a vector 
   temp_input <- reactive({c(input$first_vehicle, input$second_vehicle)})
   
   output$myimage <- renderImage({
@@ -583,7 +592,7 @@ server <- function(input, output){
   }, deleteFile = FALSE)
 }
 
-shinyApp(ui = ui, server = server)
+shinyApp(ui, server)
 
 ```
 
