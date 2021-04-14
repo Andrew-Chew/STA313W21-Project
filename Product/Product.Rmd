@@ -35,11 +35,11 @@ library(tidyr)
 <!-- <<<<<<< HEAD -->
 
 ```{r}
-data <- read_excel("Data/global emission.3.xlsx") 
+data <- read_excel("Data/global emission.1.xlsx") 
 df <- data.frame( 
   x= data$`Sub-sector`,
   y=data$`Share of global greenhouse gas emissions (%)`) 
-#df 
+
 
 df_transport <- df %>% slice(1:5)
 #df_transport
@@ -64,7 +64,7 @@ highchart () %>%
       colorByPoint = TRUE
       )) %>%
   hc_title(
-    text = "Total Global CO2 Emissions by Sector in 2016"
+    text = "Total Global CO2 Emissions in 2016"
     ) 
 
 ```
