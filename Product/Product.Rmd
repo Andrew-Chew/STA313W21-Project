@@ -360,5 +360,66 @@ legend("topleft", legend = c("car","train","flight","motorcycle","bus","subway",
 <!-- Part 4 -->
 ## How can you help?
 
+```{r}
+ui <- fluidPage(
+  fluidRow(
+    radioButtons(inputId = "first_vehicle", 
+                 label = "First Vehicle:",
+                 choices =  list("airplane" = 1, "Medium Car (petrol)" = 2, "National Rail" = 3, "Medium Electrical Vehicle" = 4, "Coach" = 5),
+                 selected = 1)),
+  fluidRow(
+    radioButtons(inputId = "second_vehicle",
+                 label = "Second Vehicle:",
+                 choices = list("airplane" = 1, "Medium Car (petrol)" = 2, "National Rail" = 3, "Medium Electrical Vehicle" = 4, "Coach" = 5), 
+                 selected = 1)),
+  mainPanel(
+    # Use imageOutput to place the image on the page
+    imageOutput("myImage")
+    )
+)
+
+server <- function(input, output){
+  # save the 2 inputs in a vector
+  temp_input <- reactive({c(input$first_vehicle, input$second_vehicle)})
+  
+  output$myimage <- renderImage({
+    if (temp_input == c(1,1)){
+      return(list(
+        src = "www/f_vs_f.png",
+        filetype = "image/png",
+        alt = "Flight vs Flight"
+      ))
+    } else if (temp_input == c(2,2)){
+      return(list(
+        src = "www/car_vs_car.png",
+        filetype = "image/png",
+        alt = "Car vs Car"
+      ))
+    } else if (temp_input == c(3,3)){
+      return(list(
+        src = "www/train_vs_train.png",
+        filetype = "image/png",
+        alt = "Train vs Train"
+      ))
+    } else if (temp_input == c(4,4)){
+      return(list(
+        src = "www/EV_vs_EV.png",
+        filetype = "image/png",
+        alt = "EV vs EV"
+      ))
+    } else if (temp_input == c(5,5)){
+      return(list(
+        src = "www/bus_vs_bus.png",
+        filetype = "image/png",
+        alt = "bus vs bus"
+      ))
+    }
+  })
+}
+
+shinyApp(ui = ui, server = server)
+
+```
+
 <!-- Conclusion -->
 ## Flatten the curve!
