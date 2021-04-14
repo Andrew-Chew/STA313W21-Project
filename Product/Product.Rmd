@@ -38,14 +38,15 @@ According to NASA, climate change is a long-term change in the average weather p
 
 A significant proportion of these emissions comes from just transportation!
 
-```{r}
+```{r, figures-side, fig.show="hold", out.width="50%"}
+par(mar = c(4, 4, .1, .1))
 data <- read_excel("Data/global emission.1.xlsx") 
 df <- data.frame( 
   x= data$`Sub-sector`,
   y=data$`Share of global greenhouse gas emissions (%)`) 
 
 
-transport <- read_excel("Product/Data/global emission.3.xlsx")
+transport <- read_excel("Data/global emission.3.xlsx")
 df_transport <- transport %>% slice(1:5)
 df_transport <- data.frame( 
   x= df_transport$`Sub-sector`,
@@ -96,7 +97,6 @@ transport_pie <- highchart () %>%
     text = "Global CO2 Emissions from Transportation Types in 2016"
     ) 
 
-par(mfrow=c(2,1))
 total_pie
 transport_pie
 
