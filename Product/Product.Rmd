@@ -44,14 +44,18 @@ df <- data.frame(
   x= data$`Sub-sector`,
   y=data$`Share of global greenhouse gas emissions (%)`) 
 
-transport <- read_excel("Data/global emission.3.xlsx")
+
+transport <- read_excel("Product/Data/global emission.3.xlsx")
 df_transport <- transport %>% slice(1:5)
+df_transport <- data.frame( 
+  x= df_transport$`Sub-sector`,
+  y=df_transport$`Share of global greenhouse gas emissions (%)`) 
 
 # Set highcharter options 
 options(highcharter.theme = hc_theme_smpl(tooltip = list(valueDecimals = 2))) 
 
 # prduce the interactive piechart 
-highchart () %>% 
+total_pie <- highchart () %>% 
   hc_add_series(
     df, 
     "pie",
@@ -71,6 +75,30 @@ highchart () %>%
     text = "Total Global CO2 Emissions in 2016"
     ) 
 
+# pie chart for transportation categories 
+transport_pie <- highchart () %>% 
+  hc_add_series(
+    df_transport, 
+    "pie",
+    hcaes(
+      x = x,
+      y = y,
+      ),
+    name = "CO2 emissions by %"
+    )  %>%
+  hc_plotOptions(
+    series = list(
+      showInLegend = FALSE,
+      pointFormat = "{point.y}%",
+      colorByPoint = TRUE
+      )) %>%
+  hc_title(
+    text = "Global CO2 Emissions from Transportation Types in 2016"
+    ) 
+
+par(mfrow=c(2,1))
+total_pie
+transport_pie
 
 ```
 
