@@ -33,12 +33,19 @@ library(tidyr)
 <!-- Part 1 -->
 ## Climate Change & CO^2^ 101
 <!-- <<<<<<< HEAD -->
+What is climate change?
+According to NASA, climate change is a long-term change in the average weather patterns that have come to define Earth’s local, regional and global climates. These changes have a broad range of observed effects that are synonymous with the term.Changes observed in Earth’s climate since the early 20th century are primarily driven by human activities, particularly fossil fuel burning, which increases heat-trapping greenhouse gas levels in Earth’s atmosphere, raising Earth’s average surface temperature. These human-produced temperature increases are commonly referred to as global warming. Natural processes can also contribute to climate change, including internal variability (e.g., cyclical ocean patterns like El Niño, La Niña and the Pacific Decadal Oscillation) and external forcings (e.g., volcanic activity, changes in the Sun’s energy output, variations in Earth’s orbit)
+
+A significant proportion of these emissions comes from just transportation!
 
 ```{r}
 data <- read_excel("Data/global emission.1.xlsx") 
 df <- data.frame( 
   x= data$`Sub-sector`,
   y=data$`Share of global greenhouse gas emissions (%)`) 
+
+transport <- read_excel("Data/global emission.3.xlsx")
+df_transport <- transport %>% slice(1:5)
 
 # Set highcharter options 
 options(highcharter.theme = hc_theme_smpl(tooltip = list(valueDecimals = 2))) 
@@ -65,10 +72,11 @@ highchart () %>%
     ) 
 
 
-
 ```
 
-
+Many people own cars in Canada. Did you know that the average Canadian vehicle, which burns 2 000 L of gasoline every year, releases about 4 600 kg of CO2 into the atmosphere (according to Natural Resources Canada)? 
+This number might not mean much to you. So let's see how many trees are working to absorb our emissions. 
+According to US Department of Agriculture, in one year a mature tree will absorb more than 48 pounds (roughly 22 kg) of CO2 from the atmosphere and release oxygen in exchange. 209 trees work to absorb just 1 average vehicle's CO2 emissions. 
 
 
 
