@@ -33,21 +33,29 @@ library(tidyr)
 <!-- Part 1 -->
 ## Climate Change & CO^2^ 101
 <!-- <<<<<<< HEAD -->
+What is climate change?
+According to NASA, climate change is a long-term change in the average weather patterns that have come to define Earth’s local, regional and global climates. These changes have a broad range of observed effects that are synonymous with the term.Changes observed in Earth’s climate since the early 20th century are primarily driven by human activities, particularly fossil fuel burning, which increases heat-trapping greenhouse gas levels in Earth’s atmosphere, raising Earth’s average surface temperature. These human-produced temperature increases are commonly referred to as global warming. Natural processes can also contribute to climate change, including internal variability (e.g., cyclical ocean patterns like El Niño, La Niña and the Pacific Decadal Oscillation) and external forcings (e.g., volcanic activity, changes in the Sun’s energy output, variations in Earth’s orbit)
+
+A significant proportion of these emissions comes from just transportation!
 
 ```{r}
-data <- read_excel("Data/global emission.3.xlsx") 
+data <- read_excel("Data/global emission.1.xlsx") 
 df <- data.frame( 
   x= data$`Sub-sector`,
   y=data$`Share of global greenhouse gas emissions (%)`) 
-#df 
 
-df_transport <- df %>% slice(1:5)
-#df_transport
+
+transport <- read_excel("Product/Data/global emission.3.xlsx")
+df_transport <- transport %>% slice(1:5)
+df_transport <- data.frame( 
+  x= df_transport$`Sub-sector`,
+  y=df_transport$`Share of global greenhouse gas emissions (%)`) 
 
 # Set highcharter options 
 options(highcharter.theme = hc_theme_smpl(tooltip = list(valueDecimals = 2))) 
 
-highchart () %>% 
+# prduce the interactive piechart 
+total_pie <- highchart () %>% 
   hc_add_series(
     df, 
     "pie",
@@ -64,12 +72,39 @@ highchart () %>%
       colorByPoint = TRUE
       )) %>%
   hc_title(
-    text = "Total Global CO2 Emissions by Sector in 2016"
+    text = "Total Global CO2 Emissions in 2016"
     ) 
+
+# pie chart for transportation categories 
+transport_pie <- highchart () %>% 
+  hc_add_series(
+    df_transport, 
+    "pie",
+    hcaes(
+      x = x,
+      y = y,
+      ),
+    name = "CO2 emissions by %"
+    )  %>%
+  hc_plotOptions(
+    series = list(
+      showInLegend = FALSE,
+      pointFormat = "{point.y}%",
+      colorByPoint = TRUE
+      )) %>%
+  hc_title(
+    text = "Global CO2 Emissions from Transportation Types in 2016"
+    ) 
+
+par(mfrow=c(2,1))
+total_pie
+transport_pie
 
 ```
 
-
+Many people own cars in Canada. Did you know that the average Canadian vehicle, which burns 2 000 L of gasoline every year, releases about 4 600 kg of CO2 into the atmosphere (according to Natural Resources Canada)? 
+This number might not mean much to you. So let's see how many trees are working to absorb our emissions. 
+According to US Department of Agriculture, in one year a mature tree will absorb more than 48 pounds (roughly 22 kg) of CO2 from the atmosphere and release oxygen in exchange. 209 trees work to absorb just 1 average vehicle's CO2 emissions. 
 
 
 
@@ -302,37 +337,107 @@ part2_widget(p2_emissions_clean, p2_production_clean)
 
 ```{r}
 ui <- fluidPage(
-  
-  sliderInput("distance", "How far do you travel every day on average? (km)",min = 0, max = 1000, value = 500),
-  plotOutput("distPlot"),
-  checkboxGroupInput("icons", "What type of primary vehicle do you use?",
-                     choiceNames = list(icon("car"), icon("train"),
-                                        icon("plane"),icon("motorcycle"),icon("bus"),icon("subway"), icon("bicycle")),
-                     choiceValues = list("car with CO2 emission 10 per kilometer", "train with CO2 emission 8 per kilometer", "plane with CO2 emission 7 per kilometer","motorcycle with CO2 emission 6 per kilometer","bus with CO2 emission 5 per kilometer","subway with CO2 emission 3 per kilometer", "bicycle with CO2 emission 1 per kilometer")
+  fluidRow(
+    sliderInput("distance", "How far do you travel every day on average? (km)",min = 0, max = 250, value = 125),
   ),
-  textOutput("txt")
+  
+  fluidRow(
+    radioButtons(
+          inputId = "choice",
+          label = "What type of primary vehicle do you use?:",
+          choices = list("Car" = 1, "Train" = 2,"Plane" = 3, "Motorcycle" = 4, "Bus" = 5, "Subway" = 6, "Bicycle" = 7), 
+          inline = TRUE)
+    ),
+
+   fluidRow(
+     textOutput("word"),
+     textOutput("calculation"),
+     ),
+  
+  fluidRow(
+    imageOutput("factory"),
+    ),
 )
 
 server <- function(input, output, session) {
-  output$txt <- renderText({
-    icons <- paste(input$icons, collapse = ", ")
-    paste("You chose", icons)
-    })
-  # Reactive expression to create data frame of all input values ----
-}
+  result <- reactive({
+    if (input$choice == 1) {
+            co2emission2 = 171 *input$distance
+    }
+    else if (input$choice == 2){
+            co2emission2 = 41 * input$distance
+    }
+    else if (input$choice == 3){
+      co2emission2 = 133 * input$distance
+    }
+     else if (input$choice == 4){
+      co2emission2 = 103 * input$distance
+     }
+     else if (input$choice == 5){
+      co2emission2 = 105 * input$distance
+     }
+     else if (input$choice == 6){
+      co2emission2 = 6 * input$distance
+     }
+     else if (input$choice == 7){
+      co2emission2 = 0 * input$distance
+    }
+      })
 
+
+  output$word <- renderText({"The total CO2 emission (g) is:"})
+  output$calculation <- renderText({print(result())
+    })
+  output$factory <- renderImage({
+    if(result() <= 2500){
+      return(list(
+        src = "www/extremely low.png",
+        fileType = "image/png",
+        alt = "exlow"
+      ))
+    }
+    if(result() <= 5000){
+      return(list(
+        src = "www/low.png",
+        fileType = "image/png",
+        alt = "low"
+      ))
+    }
+    else if(result() <=7500){
+      return(list(
+        src = "www/medium.png",
+        fileType = "image/png",
+        alt = "medium"
+      ))
+    }
+    else if(result() <= 10000){
+      return(list(
+        src = "www/high.png",
+        fileType = "image/png",
+        alt = "high"
+      ))
+    }
+    else if(result() > 10000){
+      return(list(
+        src = "www/extremely high.png",
+        fileType = "image/png",
+        alt = "exhigh"
+      ))
+    }
+    },deleteFile = FALSE)
+}
 shinyApp(ui, server)
 ```
 
 ```{r}
 #the CO2 emission per kilometer for various types of cars
-car_index <- 10
-train_index <- 8
-flight_index <- 7
-motorcycle_index <- 6
-bus_index <- 5
-subway_index <- 3
-bike_index <- 1
+car_index <- 171
+train_index <- 41
+flight_index <- 133
+motorcycle_index <- 103
+bus_index <- 105
+subway_index <- 6
+bike_index <- 0
 
 #calculate the CO2 emission for each vehicle
 time = c(2021,2022,2023,2024,2025)
@@ -345,7 +450,7 @@ CO2_emission_subway <- subway_index*(time - 2021)
 CO2_emission_bike <- bike_index*(time - 2021)
 
 #plot the graph
-plot(CO2_emission_car,type = "o",col = "red", xlab = "Time (years)", ylab = "CO2 emission", 
+plot(CO2_emission_car,type = "o",col = "red", xlab = "Time", ylab = "CO2 emission", 
    main = "Impact of choosing alternative means of transports",lwd=3)
 lines(CO2_emission_train, type = "o", col = "orange",lwd=3)
 lines(CO2_emission_flight, type = "o", col = "blue",lwd=3)
