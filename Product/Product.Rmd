@@ -1,5 +1,5 @@
 ---
-title: "One small change in transportation, one giant leap for the environment"
+title: "One small change in the way we travel, one giant leap for the environment"
 author: "The (Green)Power Rangers: Ruei-Hung Chen, Andrew Chew, Zhenyu Xuan, Elif Yurek"
 date: "16/04/2021"
 output: html_document
@@ -23,7 +23,6 @@ library(shiny)
 library(shinythemes)
 library(scales)
 library(tidyr)
-library(imager)
 
 
 # Empty Shiny App template. 
@@ -40,7 +39,7 @@ According to NASA, climate change is a long-term change in the average weather p
 
 A significant proportion of these emissions comes from just transportation!
 
-```{r, figures-side, fig.show="hold", out.width="50%"}
+```{r echo=FALSE, figures-side, fig.show="hold", out.width="50%"}
 par(mar = c(4, 4, .1, .1))
 data <- read_excel("Data/global emission.1.xlsx") 
 df <- data.frame( 
@@ -119,9 +118,33 @@ Globally we produced 5.7 billion tonnes of CO2 from only transportation in 2016.
 
 <!-- Part 2 -->
 ## Unsustainable CO^2^ Emissions
+|
+|       With the improvement of technology, rise in human population, and the growth of industry, CO^2^ emissions are rising rapidly. In 2019 alone, annual production-based CO^2^ emissions reached over **36 billion tonnes**, an increase of about 15.8% just a decade ago and over 60.5% since 1990. At current levels, CO^2^ emissions are unsustainable for the environment and if we do not reverse the trend soon, we risk causing irreparable harm to the world we live in.
+|
+|       Perhaps one positive thing that came out of the global financial crisis of 2008 was that annual CO^2^ emissions fell for the first time in many years. One possible explanation is that due to the recession, less people were able to afford buying or using vehicles for transportation causing less vehicles to be on the road and therefore, less CO^2^ to be emitted. This relationship can be seen in the following plots where both annual vehicle production and CO^2^ emissions fell during said period. There appears to be a similar trend happening with the current global COVID-19 pandemic where annual vehicle productions fell drastically while CO^2^ emissions appear to stagnate in this time period. One thing is for certain, less (conventional) vehicles on the road means less CO^2^ emissions.
+|
+|       That being said, relying on disastrous events to curb global warming is not ideal! We have to change our thinking and lifestyles if we want a healthy planet for our future generations. With technological advancements, "greener" alternatives of transportation and energy production are becoming readily available and more cost efficient. Countries as well as individuals are jumping on the "green" bandwagon as the effects of global warming become more and more pronounced. It is a step in the right direction but is it too little too late? Find out how well your country has been doing with respect to CO^2^ emissions using the interactive plot below!
+&nbsp; <!-- blank line -->
+
 ```{r part2 setup, include=FALSE}
 # Data for emissions.
 p2_emissions_data <- read.csv("Data/owid-co2-data.csv")
+
+# Data Exploration.
+# 2019 CO2 emissions.
+c19 <- p2_emissions_data[which(p2_emissions_data$country == "World" & p2_emissions_data$year == 2019), c("co2")]
+c19
+# 2009 CO2 emissions.
+c09 <- p2_emissions_data[which(p2_emissions_data$country == "World" & p2_emissions_data$year == 2009), c("co2")]
+c09
+# 1990 CO2 emissions.
+c90 <- p2_emissions_data[which(p2_emissions_data$country == "World" & p2_emissions_data$year == 1990), c("co2")]
+c90
+# Y-o-Y growth.
+(c19/ c09) - 1
+(c19/ c90) - 1
+
+# Clean data.
 p2_emissions_clean <- p2_emissions_data[c("country", "year", "co2", "cumulative_co2", "gas_co2", "cumulative_gas_co2")]
 
 # Data for production.
@@ -151,8 +174,8 @@ part2_widget = function(emissions_data, production_data) {
         column(3, radioButtons(
           inputId = "type",
           label = "Type:",
-          choices = list("Total" = "Total", "Gas" = "Gas"),
-          selected = "Total",
+          choices = list("Show All" = "Show All", "Total" = "Total", "Gas" = "Gas"),
+          selected = "Show All",
           inline = TRUE)),
         
         # View selector for emissions.
@@ -167,34 +190,36 @@ part2_widget = function(emissions_data, production_data) {
         column(6, radioButtons(
           inputId = "vehicle_type",
           label = "Type:",
-          choices = list("Total" = "Total", "Commercial" = "Commercial", "Cars"= "Cars"),
-          selected = "Total",
+          choices = list("Show All" = "Show All", "Total" = "Total", "Commercial" = "Commercial", "Cars"= "Cars"),
+          selected = "Show All",
           inline = TRUE))
       ),
       
       fluidRow(
-        # Show both for comparison selector for emissions.
-        column(3, checkboxInput(
-          inputId = "showBoth",
-          label = "Show Both (For Comparison)",
-          value = TRUE
-        )),
+        # # Show both for comparison selector for emissions.
+        # column(3, checkboxInput(
+        #   inputId = "showBoth",
+        #   label = "Show Both (For Comparison)",
+        #   value = TRUE
+        # )),
         
         # Country selector for emissions.
-        column(3, selectInput(
+        column(6, selectInput(
           inputId = "country",
           label = "Country:",
           choices = unique(emissions_data$country),
-          selected = "World")),
+          selected = "World",
+          width = "95%"),
+        ),
         
-        # Show both for comparison selector for production.
-        column(3, checkboxInput(
-          inputId = "showAll",
-          label = "Show All (For Comparison)",
-          value = TRUE
-        )),
+        # # Show both for comparison selector for production.
+        # column(3, checkboxInput(
+        #   inputId = "showAll",
+        #   label = "Show All (For Comparison)",
+        #   value = TRUE
+        # )),
         
-        column(3, )
+        column(6, )
       ),
       
       # Year range slider widget.
@@ -242,7 +267,7 @@ part2_widget = function(emissions_data, production_data) {
       # Put together plot based on user selections.
       selected_emissions_plot <- reactive({
         # Show both.
-        if (input$showBoth == TRUE) {
+        if (input$type == "Show All") {
           ggplot(selected_emissions_data(), aes(x = year)) +
             geom_point(aes(y = Total, colour = "Total")) +
             geom_point(aes(y = Gas, colour = "Gas")) +
@@ -323,7 +348,7 @@ part2_widget = function(emissions_data, production_data) {
       # Put together plot based on user selections.
       selected_production_plot <- reactive({
         # Show all.
-        if (input$showAll == TRUE) {
+        if (input$vehicle_type == "Show All") {
           ggplot(production_data, aes(x = year, y = count / 1000000, colour = Type)) +
             geom_point() +
             geom_path() +
@@ -382,7 +407,8 @@ part2_widget = function(emissions_data, production_data) {
       output$production <- renderPlot({selected_production_plot()})
     },
 
-    options = list(height = 500)
+    # Resize widget so that it fits on the page (instead of vertical scroll).
+    options = list(height = 700)
   )
 }
 ```
@@ -394,8 +420,14 @@ part2_widget(p2_emissions_clean, p2_production_clean)
 
 <!-- Part 3 -->
 ## What's your "Contribution"?
-
-```{r}
+|
+|       Let’s conduct a survey on what type of vehicle you use in your daily life and how far you guys will commute every day on average to see the level of Co2 emissions you release. There is a slider bar which can be used to input the distance and there are multiple choices of various types of vehicle in this second question of the survey. You can only make one choice in this part, since we want to see the Co2 emissions related to the primary vehicles you use in your daily life.
+|
+|       Based on the CO2 emissions per passenger per kilometer data, we can easily calculate the CO2 emission level they release by multiplying the CO2 emission of various vehicles per kilometer by the distance you input. You can also see the total CO2 emissions you release. You can change the choices of primary vehicles and distance, the result will be changed.
+|
+|       The result will also be reflected on the interactive visualization. There are several chimneys at the bottom of the survey. And there is smoke with different color hues which are red from the darkest to the lightest to stand for different levels of the CO2 emission levels from the highest to the lowest. If CO2 emissions are less than 2500g, then it corresponds to extremely low level; if CO2 emissions are greater than 2500g and less than 5000g, which means low level; for CO2 greater than 5000g and less than 7500g, the level will be medium; if the results are greater than 7500g and less than 10000g, it will denote high level; finally, if CO2 emissions are greater than 10000g, the result will be regarded as extremely high level of emissions.
+|
+```{r echo=FALSE}
 ui <- fluidPage(
   fluidRow(
     sliderInput("distance", "How far do you travel every day on average? (km)",min = 0, max = 250, value = 125),
@@ -486,10 +518,13 @@ server <- function(input, output, session) {
     }
     },deleteFile = FALSE)
 }
-shinyApp(ui, server)
+shinyApp(ui, server, options = list(height = 700)) # Change this to resize widget.
+
 ```
 
-```{r}
+|       Based on the CO2 emissions per passenger per kilometer data, we can also find out that the impact of choosing alternative means of transport. Also, you can compare all types of vehicles with the following graph. The different color hues to represent categorical attributes – types of primary vehicles. The slope of each line will be the amount of the CO2 emission per person per kilometer release with one type of vehicle. From the visualization, you can see the total CO2 emissions you release if you choose different vehicle to daily commute 1 kilometer for 5 years. We can obviously see the difference among various types of vehicles along with the time. This can reflect the impacts on choosing alternative means of transport.
+
+```{r echo=FALSE}
 #the CO2 emission per kilometer for various types of cars
 car_index <- 171
 train_index <- 41
@@ -501,16 +536,16 @@ bike_index <- 0
 
 #calculate the CO2 emission for each vehicle
 time = c(2021,2022,2023,2024,2025)
-CO2_emission_car <- car_index*(time - 2021)
-CO2_emission_train <- train_index*(time - 2021)
-CO2_emission_flight <- flight_index*(time - 2021)
-CO2_emission_motorcycle <- motorcycle_index*(time - 2021)
-CO2_emission_bus <- bus_index*(time - 2021)
-CO2_emission_subway <- subway_index*(time - 2021)
-CO2_emission_bike <- bike_index*(time - 2021)
+CO2_emission_car <- car_index*(time - 2021)*365
+CO2_emission_train <- train_index*(time - 2021)*365
+CO2_emission_flight <- flight_index*(time - 2021)*365
+CO2_emission_motorcycle <- motorcycle_index*(time - 2021)*365
+CO2_emission_bus <- bus_index*(time - 2021)*365
+CO2_emission_subway <- subway_index*(time - 2021)*365
+CO2_emission_bike <- bike_index*(time - 2021)*365
 
 #plot the graph
-plot(CO2_emission_car,type = "o",col = "red", xlab = "Time", ylab = "CO2 emission", 
+plot(CO2_emission_car,type = "o",col = "red", xlab = "Time (year)", ylab = "CO2 emission (g)", 
    main = "Impact of choosing alternative means of transports",lwd=3)
 lines(CO2_emission_train, type = "o", col = "orange",lwd=3)
 lines(CO2_emission_flight, type = "o", col = "blue",lwd=3)
@@ -525,7 +560,7 @@ legend("topleft", legend = c("car","train","flight","motorcycle","bus","subway",
 <!-- Part 4 -->
 ## How can you help?
 
-```{r}
+```{r echo=FALSE}
 ui <- fluidPage(
   fluidRow(
     # setting up radio buttons in UI
@@ -670,9 +705,47 @@ server <- function(input, output, session){
 
 }
 
-shinyApp(ui, server)
+shinyApp(ui, server, options = list(height = 700)) # Change this to resize widget.
 
 ```
 
 <!-- Conclusion -->
 ## Flatten the curve!
+|
+|       According to [Edmunds](https://static.ed.edmunds-media.com/unversioned/img/industry-center/insights/2020-automotive-trends.pdf), the average price of a new car in 2019 is about USD 37,000, not including maintanence and gas costs. On the other hand, you can get a quality bicycle for less than USD 1,000. Furthermore, riding a bike is safer, healthier, and better for the environment. In times like these when we are stuck at home all day, it is important to go outside from time to time, and what better way to do so than to explore new places with a bike! Stretch those legs and enjoy the world! Save your hard-earned cash while saving the environment by switching your main method of travel and join the rapidly growing biking community today! If you are already a part of that, major props to you and thank you on behalf of our beloved planet Earth! If biking is not suitable for your purposes, consider other forms of travelling such as taking the bus or switching to an electric vehicle to reduce your carbon footprint. If enough people adopt cleaner ways to travel, we could potentially reduce annual CO^2^ emissions significantly enough to curb global warming. Stay safe and help flatten the curves!
+&nbsp; <!-- blank line -->
+
+```{r conclusion, echo=FALSE, fig.align="center", message=FALSE, warning=FALSE}
+# Add some data.
+f_t_c <- p2_emissions_data[which(p2_emissions_data$country == "World" & p2_emissions_data$year >= 1900), c("year", "co2")]
+for (i in seq(1:11)) {
+  f_t_c[nrow(f_t_c) + 1, ] = c(2019 + i, f_t_c[nrow(f_t_c), 2] * (0.999 - (0.005 * i)))
+}
+
+# Plot.
+ggplot(f_t_c, aes(x = year, y = co2)) +
+  geom_point(data = f_t_c[which(f_t_c$year <= 2019), ], size = 0.75) +
+  geom_point(data = f_t_c[which(f_t_c$year > 2019), ], color = "red", size = 0.75) +
+  geom_path(data = f_t_c[which(f_t_c$year <= 2019), ]) +
+  geom_path(data = f_t_c[which(f_t_c$year >= 2019), ], color = "red") +
+  geom_smooth(color = "#1b9e77", lwd = 0.75, se = F) +
+  geom_smooth(data = f_t_c[which(f_t_c$year <= 2019), ], lwd = 0.75, se = F) +
+  scale_x_continuous(breaks = c(seq(1900, 2030, by = 10)), labels = c(seq(1900, 2030, by = 10))) +
+  ylim(0, 40000) +
+  labs(title = "Flatten The (Other) Curve!",
+       subtitle = "New data points in red, new emissions time trend in green",
+       x = "Year",
+       y = expression(paste("CO"^"2", " Emissions (million tonnes)")),
+       caption = "An ideal senario - The (Green)Power Rangers.") +
+  theme_wsj() +
+  theme(plot.title = element_text(size = rel(0.7), hjust = 0.5),
+        plot.subtitle = element_text(size = rel(0.4), hjust = 0.5),
+        plot.caption = element_text(size = rel(0.4)),
+        axis.title = element_text(size = rel(0.4)),
+        axis.text = element_text(size = rel(0.6)),
+        legend.position = "top",
+        legend.justification = "center")
+```
+&nbsp; <!-- blank line -->
+
+|                                                     **One small change in the way we travel, one giant leap for the environment!**
