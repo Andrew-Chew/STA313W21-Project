@@ -730,7 +730,7 @@ server <- function(input, output, session){
     } else if (compare(temp_input() , c(1,5))| compare(temp_input(), c(5,1))){
       return(5.57)
     } else if (compare(temp_input() , c(2,5))| compare(temp_input(), c(5,2))){
-      return(2.86)
+      return(6.86)
     } else if (compare(temp_input(), c(3,5))|compare(temp_input(), c(5,3))){
       return(1.46)
     } else if (compare(temp_input() ,c(4,5))| compare(temp_input(), c(5,4))){
@@ -757,7 +757,28 @@ server <- function(input, output, session){
   # The word description of the comparison
   output$word <- renderText({
     if (compare(temp_input(), c(1,1)) | compare(temp_input(), c(2,2)) | compare(temp_input(), c(3,3)) |compare(temp_input(), c(4,4)) | compare(temp_input(), c(5,5))){
-      paste("One passenger taking", vtype(input$first_vehicle), "has the same level of CO2 emission as", calculation(), "passenger taking", vtype(input$second_vehicle))
+      paste("One passenger taking", vtype(input$first_vehicle), "has the same level of CO2 emission/km as", calculation(), "person taking", vtype(input$second_vehicle))
+    } else if (compare(temp_input(), c(1,2))| compare(temp_input(), c(2,1))){
+      paste("One passenger taking a car has the same level of CO2 emission/km as", calculation(), "passengers taking an airplane flight." )
+    } else if (compare(temp_input(), c(1,3))| compare(temp_input() ,c(3,1))){
+      paste("One passenger taking the airplane has the same level of CO2 emission/km as", calculation(), "passengers taking the train.")
+    } else if (compare(temp_input(), c(1,4))| compare(temp_input(), c(4,1))){
+      paste("One passenger taking the airplane has the same level of CO2 emission/km as", calculation(), "passengers taking/driving Electric Vehicles. ")
+    } else if (compare(temp_input() , c(2,3))|compare(temp_input(), c(3,2))){
+      paste ("One person driving a car has the same level of CO2 emission/km as", calculation(), "passengers taking the train.")
+    } else if (compare(temp_input(), c(2,4)) | compare(temp_input() , c(4,2))){
+      paste("One person driving a car has the same level of CO2 emission/km as", 
+            calculation(), "people taking/driving Electric Vehicles. ")
+    } else if (compare(temp_input() ,c(3,4)) | compare(temp_input(),c(4,3))){
+      paste("One person taking/driving an Electric Vehicle has the same CO2 emission/km as", calculation(), "people taking the train.")
+    } else if (compare(temp_input() , c(1,5))| compare(temp_input(), c(5,1))){
+      paste("One person taking an airplane has the same CO2 emission/km as", calculation(), "people taking the bus.")
+    } else if (compare(temp_input() , c(2,5))| compare(temp_input(), c(5,2))){
+      paste("One person taking/driving a car has the same amount of CO2 emission/km as", calculation(), "people taking the bus.")
+    } else if (compare(temp_input(), c(3,5))|compare(temp_input(), c(5,3))){
+      paste("One person taking the train has the same amount of CO2 emission/km as", calculation(), "people taking the bus.")
+    } else if (compare(temp_input() ,c(4,5))| compare(temp_input(), c(5,4))){
+      paste("One person taking/driving an Electrical Vehicle has the same amount of CO2 emission/km as", calculation(), "people taking the bus.")
     }
   })
   
