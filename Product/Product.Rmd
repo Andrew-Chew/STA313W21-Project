@@ -428,7 +428,7 @@ part2_widget(p2_emissions_clean, p2_production_clean)
 |
 |       The result will also be reflected on the interactive visualization. There are several chimneys at the bottom of the survey. And there is smoke with different color hues which are red from the darkest to the lightest to stand for different levels of the CO2 emission levels from the highest to the lowest. If CO2 emissions are less than 2500g, then it corresponds to extremely low level; if CO2 emissions are greater than 2500g and less than 5000g, which means low level; for CO2 greater than 5000g and less than 7500g, the level will be medium; if the results are greater than 7500g and less than 10000g, it will denote high level; finally, if CO2 emissions are greater than 10000g, the result will be regarded as extremely high level of emissions.
 |
-```{r echo=FALSE}
+```{r echo=FALSE, fig.align="center", message=FALSE, warning=FALSE}
 ui <- fluidPage(
   fluidRow(
     sliderInput("distance", "How far do you travel every day on average? (km)",min = 0, max = 250, value = 125),
@@ -525,7 +525,7 @@ shinyApp(ui, server, options = list(height = 700)) # Change this to resize widge
 
 |       Based on the CO2 emissions per passenger per kilometer data, we can also find out that the impact of choosing alternative means of transport. Also, you can compare all types of vehicles with the following graph. The different color hues to represent categorical attributes – types of primary vehicles. The slope of each line will be the amount of the CO2 emission per person per kilometer release with one type of vehicle. From the visualization, you can see the total CO2 emissions you release if you choose different vehicle to daily commute 1 kilometer for 5 years. We can obviously see the difference among various types of vehicles along with the time. This can reflect the impacts on choosing alternative means of transport.
 
-```{r echo=FALSE}
+```{r echo=FALSE, fig.align="center", message=FALSE, warning=FALSE}
 #the CO2 emission per kilometer for various types of cars
 car_index <- 171
 train_index <- 41
@@ -562,6 +562,7 @@ legend("topleft", legend = c("car","train","flight","motorcycle","bus","subway",
 ## How can you help?
 
 ```{r echo=FALSE}
+library(png)
 ui <- fluidPage(
   fluidRow(
     # setting up radio buttons in UI
@@ -582,6 +583,7 @@ ui <- fluidPage(
   # setting up imageOutput in the UI 
   fluidRow(
     # Use imageOutput to place the image on the page
+
     imageOutput(outputId = "myImage")
     ),
 
@@ -590,6 +592,14 @@ ui <- fluidPage(
     textOutput(outputId = "word")
 
   )
+
+   
+  # fluidRow(
+  #   # Print text at the end of this section to provide accurate comparison
+  #   textOutput(outputId = "word")
+  #   
+  # )
+
 )
 
 
