@@ -35,11 +35,11 @@ library(tidyr)
 ## Climate Change & CO^2^ 101
 <!-- <<<<<<< HEAD -->
 What is climate change?
-According to NASA, climate change is a long-term change in the average weather patterns that have come to define Earth’s local, regional and global climates. These changes have a broad range of observed effects that are synonymous with the term.Changes observed in Earth’s climate since the early 20th century are primarily driven by human activities, particularly fossil fuel burning, which increases heat-trapping greenhouse gas levels in Earth’s atmosphere, raising Earth’s average surface temperature. These human-produced temperature increases are commonly referred to as global warming. Natural processes can also contribute to climate change, including internal variability (e.g., cyclical ocean patterns like El Niño, La Niña and the Pacific Decadal Oscillation) and external forcings (e.g., volcanic activity, changes in the Sun’s energy output, variations in Earth’s orbit)
+According to [NASA](https://climate.nasa.gov/resources/global-warming-vs-climate-change/), climate change is a long-term change in the average weather patterns that have come to define Earth’s local, regional and global climates. These changes have a broad range of observed effects that are synonymous with the term.Changes observed in Earth’s climate since the early 20th century are primarily driven by human activities, particularly fossil fuel burning, which increases heat-trapping greenhouse gas levels in Earth’s atmosphere, raising Earth’s average surface temperature. These human-produced temperature increases are commonly referred to as global warming. Natural processes can also contribute to climate change, including internal variability (e.g., cyclical ocean patterns like El Niño, La Niña and the Pacific Decadal Oscillation) and external forcings (e.g., volcanic activity, changes in the Sun’s energy output, variations in Earth’s orbit)
 
 A significant proportion of these emissions comes from just transportation!
 
-```{r echo=FALSE, figures-side, fig.show="hold", out.width="50%"}
+```{r echo=FALSE, figures-side, fig.show="hold", fig.align="center", out.width="50%"}
 par(mar = c(4, 4, .1, .1))
 data <- read_excel("Data/global emission.1.xlsx") 
 df <- data.frame( 
@@ -51,7 +51,8 @@ transport <- read_excel("Data/global emission.3.xlsx")
 df_transport <- transport %>% slice(1:5)
 df_transport <- data.frame( 
   x= df_transport$`Sub-sector`,
-  y=df_transport$`Share of global greenhouse gas emissions (%)`) 
+  y=df_transport$`Share of global greenhouse gas emissions (%)`)
+
 
 # Set highcharter options 
 options(highcharter.theme = hc_theme_smpl(tooltip = list(valueDecimals = 2))) 
@@ -84,7 +85,7 @@ transport_pie <- highchart () %>%
     "pie",
     hcaes(
       x = x,
-      y = y,
+      y = y / 16.2 * 100,
       ),
     name = "CO2 emissions by %"
     )  %>%
@@ -103,17 +104,17 @@ transport_pie
 
 ```
 
-Many people own cars in Canada. Did you know that the average Canadian vehicle, which burns 2 000 L of gasoline every year, releases about 4 600 kg of CO2 into the atmosphere (according to Natural Resources Canada)? 
+Many people own cars in Canada. Did you know that the average Canadian vehicle, which burns 2 000 L of gasoline every year, releases about 4 600 kg of CO2 into the atmosphere according to [Natural Resources Canada](https://www.nrcan.gc.ca/sites/www.nrcan.gc.ca/files/oee/pdf/transportation/fuel-efficient-technologies/autosmart_factsheet_6_e.pdf)? 
 This number might not mean much to you. So let's see how many trees are working to absorb our emissions. 
-According to US Department of Agriculture, in one year a mature tree will absorb more than 48 pounds (roughly 22 kg) of CO2 from the atmosphere and release oxygen in exchange.  
+According to [US Department of Agriculture](https://www.usda.gov/media/blog/2015/03/17/power-one-tree-very-air-we-breathe), in one year a mature tree will absorb more than 48 pounds (roughly 22 kg) of CO2 from the atmosphere and release oxygen in exchange.  
 
 ![How many trees needed to absorb CO2 emissions from 1 car](www/treesncar.png)
 209 trees work to absorb just 1 average vehicle's CO2 emissions.
-Globally we produced 5.7 billion tonnes of CO2 from only transportation in 2016. To absorb this from the atmosphere, we need 259 billion trees. World's largest forest Amazon rain forest roughly have 390 billion trees. We would need about 66% of the trees in Amazon to absorb the CO2 emissions produced only from transportation. 
+Globally we produced 5.7 billion tonnes of CO2 from only transportation in 2016. To absorb this from the atmosphere, we need 259 billion trees. World's largest forest Amazon rain forest roughly have 390 billion trees according to [EurekAlert!](https://www.eurekalert.org/pub_releases/2013-10/fm-fms101413.php). We would need about 66% of the trees in Amazon to absorb the CO2 emissions produced only from transportation. 
 
 
 ![Amazon forest in the world map](www/map_amazon.png)
-
+*image taken from [Ocean Futures](http://www.oceanfutures.org/exploration/expeditions/amazon)
 =======
 
 <!-- Part 2 -->
