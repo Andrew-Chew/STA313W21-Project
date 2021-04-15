@@ -110,7 +110,7 @@ According to [US Department of Agriculture](https://www.usda.gov/media/blog/2015
 
 ![How many trees needed to absorb CO2 emissions from 1 car](www/treesncar.png)
 209 trees work to absorb just 1 average vehicle's CO2 emissions.
-Globally we produced 5.7 billion tonnes of CO2 from only transportation in 2016. To absorb this from the atmosphere, we need 259 billion trees. World's largest forest Amazon rain forest roughly have 390 billion trees according to [EurekAlert!](https://www.eurekalert.org/pub_releases/2013-10/fm-fms101413.php. We would need about 66% of the trees in Amazon to absorb the CO2 emissions produced only from transportation. 
+Globally we produced 5.7 billion tonnes of CO2 from only transportation in 2016. To absorb this from the atmosphere, we need 259 billion trees. World's largest forest Amazon rain forest roughly have 390 billion trees according to [EurekAlert!](https://www.eurekalert.org/pub_releases/2013-10/fm-fms101413.php). We would need about 66% of the trees in Amazon to absorb the CO2 emissions produced only from transportation. 
 
 
 ![Amazon forest in the world map](www/map_amazon.png)
