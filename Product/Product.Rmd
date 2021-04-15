@@ -23,6 +23,7 @@ library(shiny)
 library(shinythemes)
 library(scales)
 library(tidyr)
+library(sets)
 
 
 # Empty Shiny App template. 
@@ -579,16 +580,16 @@ ui <- fluidPage(
                  selected = 1)),
   
   # setting up imageOutput in the UI 
-  mainPanel(
+  fluidRow(
     # Use imageOutput to place the image on the page
     imageOutput(outputId = "myImage")
-    )
-  
-  # fluidRow(
-  #   # Print text at the end of this section to provide accurate comparison
-  #   textOutput(outputId = "word")
-  #   
-  # )
+    ),
+
+  fluidRow(
+    # Print text at the end of this section to provide accurate comparison
+    textOutput(outputId = "word")
+
+  )
 )
 
 
@@ -597,129 +598,149 @@ server <- function(input, output, session){
   # save the 2 inputs in a vector 
   temp_input <- reactive({c(input$first_vehicle, input$second_vehicle)})
   
+  compare <- function(set1, set2){
+    answer = TRUE
+    i = 1
+    while (i < 3){
+      if (set1[i] != set2[i]){
+        answer = FALSE
+      }
+      i = i + 1
+    }
+    return(answer)
+  }
+
   # list the conditions for showing the images
   output$myImage <- renderImage({
-    if (identical(temp_input(), c(1,1))){
+    if (compare(temp_input(), c(1,1))){
       return(list(
         src = "www/f vs f.png",
-        filetype = "image/png",
+        fileType = "image/png",
         alt = "FlightFlight"
       ))
-    } else if (identical(temp_input(), c(2,2))){
+    } else if (compare(temp_input(), c(2,2))){
       return(list(
         src = "www/car_vs_car.png",
-        filetype = "image/png",
+        fileType = "image/png",
         alt = "CarCar"
       ))
-    } else if (identical(temp_input(), c(3,3))){
+    } else if (compare(temp_input(), c(3,3))){
       return(list(
         src = "www/train_vs_train.png",
-        filetype = "image/png",
+        fileType = "image/png",
         alt = "TrainTrain"
       ))
-    } else if (identical(temp_input(), c(4,4))){
+    } else if (compare(temp_input(), c(4,4))){
       return(list(
         src = "www/EV_vs_EV.png",
-        filetype = "image/png",
+        fileType = "image/png",
         alt = "EVEV"
       ))
-    } else if (identical(temp_input(), c(5,5))){
+    } else if (compare(temp_input(), c(5,5))){
       return(list(
         src = "www/bus_vs_bus.png",
-        filetype = "image/png",
+        fileType = "image/png",
         alt = "busbus"
       ))
-    } else if (identical(temp_input(), c(1,2))| identical(temp_input(), c(1,2))){
+    } else if (compare(temp_input(), c(1,2))| compare(temp_input(), c(2,1))){
       return(list(
         src = "www/car_vs_flight.png",
-        filetype = "image/png",
+        fileType = "image/png",
         alt = "carflight"
       ))
-    } else if (identical(temp_input(), c(1,3))| identical(temp_input() ,c(3,1))){
+    } else if (compare(temp_input(), c(1,3))| compare(temp_input() ,c(3,1))){
       return(list(
         src = "www/train_vs_flight.png",
-        filetype = "image/png",
+        fileType = "image/png",
         alt = "trainflight"
       ))
-    } else if (identical(temp_input(), c(1,4))| identical(temp_input(), c(4,1))){
+    } else if (compare(temp_input(), c(1,4))| compare(temp_input(), c(4,1))){
       return(list(
         src = "www/EV_vs_flight.png",
-        filetype = "image/png",
+        fileType = "image/png",
         alt = "flightEV"
       ))
-    } else if (identical(temp_input() , c(2,3))|identical(temp_input(), c(3,2))){
+    } else if (compare(temp_input() , c(2,3))|compare(temp_input(), c(3,2))){
       return(list(
         src = "www/car_vs_train.png",
-        filetype = "image/png",
+        fileType = "image/png",
         alt = "cartrain"
       ))
-    } else if (identical(temp_input(), c(2,4)) | identical(temp_input() , c(4,2))){
+    } else if (compare(temp_input(), c(2,4)) | compare(temp_input() , c(4,2))){
       return(list(
         src = "www/car_vs_EV.png",
-        filetype = "image/png",
+        fileType = "image/png",
         alt = "carEV"
       ))
-    } else if (identical(temp_input() ,c(3,4)) | identical(temp_input(),c(4,3))){
+    } else if (compare(temp_input() ,c(3,4)) | compare(temp_input(),c(4,3))){
       return(list(
         src = "www/train_vs_EV.png",
-        filetype = "image/png",
+        fileType = "image/png",
         alt = "trainEV"
       ))
 
-    } else if (identical(temp_input() , c(1,5))| identical(temp_input(), c(5,1))){
+    } else if (compare(temp_input() , c(1,5))| compare(temp_input(), c(5,1))){
       return(list(
         src = "www/bus_vs_flight.png",
-        filetype = "image/png",
+        fileType = "image/png",
         alt = "busflight"
       ))
-    } else if (identical(temp_input() , c(2,5))| identical(temp_input(), c(5,2))){
+    } else if (compare(temp_input() , c(2,5))| compare(temp_input(), c(5,2))){
       return(list(
         src = "www/bus_vs_car.png",
-        filetype = "image/png",
+        fileType = "image/png",
         alt = "buscar"
       ))
-    } else if (identical(temp_input(), c(3,5))|identical(temp_input(), c(5,3))){
+    } else if (compare(temp_input(), c(3,5))|compare(temp_input(), c(5,3))){
       return(list(
         src = "www/bus_vs_train.png",
-        filetype = "image/png",
+        fileType = "image/png",
         alt = "bustrain"
       ))
-    } else if (identical(temp_input() ,c(4,5))| identical(temp_input(), c(5,4))){
+    } else if (compare(temp_input() ,c(4,5))| compare(temp_input(), c(5,4))){
       return(list(
         src = "www/bus_vs_EV.png",
-        filetype = "image/png",
+        fileType = "image/png",
         alt = "busEV"
       ))
     }
   }, deleteFile = FALSE)
-  
-  # Define accurate text output
-  calculation <- reactive({
-    if (identical(temp_input(), c(1,1)) | identical(temp_input(), c(2,2)) | identical(temp_input(), c(3,3)) |identical(temp_input(), c(4,4)) | identical(temp_input(), c(5,5))){
-      ratio = 1
-    } else if (identical(temp_input(), c(1,2))| identical(team_input(), c(1,2))){
-      ratio = 1.23
-    } else if (identical(temp_input(), c(1,3))| identical(temp_input() ,c(3,1))){
-      ratio = 3.80
-    } else if(identical(temp_input(), c(1,4))| identical(temp_input(), c(4,1))){
-      ratio = 2.94
-    } else if (identical(temp_input() , c(2,3))|identical(temp_input(), c(3,2))){
-      ratio = 4.68
-    } else if (identical(temp_input(), c(2,4)) | identical(temp_input() , c(4,2))){
-      ratio = 3.62
-    } else if (identical(temp_input() ,c(3,4)) | identical(temp_input(),c(4,3))){
-      ratio = 1.29
-    } else if (identical(temp_input() , c(1,5))| identical(temp_input(), c(5,1))){
-      ratio = 5.57 
-    } else if (identical(temp_input() , c(2,5))| identical(temp_input(), c(5,2))){
-      ratio = 2.86
-    } else if (identical(temp_input(), c(3,5))|identical(temp_input(), c(5,3))){
-      ratio = 1.46
-    } else if (identical(temp_input() ,c(4,5))| identical(temp_input(), c(5,4))){
-      ratio = 1.89
-    }
 
-  })
+  
+  # Calculate the ratio between the two vehicles 
+  # calculation <- reactive({
+  #   if (compare(temp_input(), c(1,1)) | compare(temp_input(), c(2,2)) | compare(temp_input(), c(3,3)) |compare(temp_input(), c(4,4)) | compare(temp_input(), c(5,5))){
+  #     ratio = 1
+  #   } else if (compare(temp_input(), c(1,2))| compare(team_input(), c(1,2))){
+  #     ratio = 1.23
+  #   } else if (compare(temp_input(), c(1,3))| compare(temp_input() ,c(3,1))){
+  #     ratio = 3.80
+  #   } else if(compare(temp_input(), c(1,4))| compare(temp_input(), c(4,1))){
+  #     ratio = 2.94
+  #   } else if (compare(temp_input() , c(2,3))|compare(temp_input(), c(3,2))){
+  #     ratio = 4.68
+  #   } else if (compare(temp_input(), c(2,4)) | compare(temp_input() , c(4,2))){
+  #     ratio = 3.62
+  #   } else if (compare(temp_input() ,c(3,4)) | compare(temp_input(),c(4,3))){
+  #     ratio = 1.29
+  #   } else if (compare(temp_input() , c(1,5))| compare(temp_input(), c(5,1))){
+  #     ratio = 5.57 
+  #   } else if (compare(temp_input() , c(2,5))| compare(temp_input(), c(5,2))){
+  #     ratio = 2.86
+  #   } else if (compare(temp_input(), c(3,5))|compare(temp_input(), c(5,3))){
+  #     ratio = 1.46
+  #   } else if (compare(temp_input() ,c(4,5))| compare(temp_input(), c(5,4))){
+  #     ratio = 1.89
+  #   }
+  # 
+  # })
+  
+  # The word description of the comparison
+  output$word <- renderText({
+    print(compare(temp_input() , c(1,1)))
+    }
+  )
+  # output$number <- renderText({ print(calculation())}) 
 
 }
 
