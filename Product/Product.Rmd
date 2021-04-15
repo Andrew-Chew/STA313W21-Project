@@ -174,8 +174,8 @@ part2_widget = function(emissions_data, production_data) {
         column(3, radioButtons(
           inputId = "type",
           label = "Type:",
-          choices = list("Total" = "Total", "Gas" = "Gas"),
-          selected = "Total",
+          choices = list("Show All" = "Show All", "Total" = "Total", "Gas" = "Gas"),
+          selected = "Show All",
           inline = TRUE)),
         
         # View selector for emissions.
@@ -190,34 +190,36 @@ part2_widget = function(emissions_data, production_data) {
         column(6, radioButtons(
           inputId = "vehicle_type",
           label = "Type:",
-          choices = list("Total" = "Total", "Commercial" = "Commercial", "Cars"= "Cars"),
-          selected = "Total",
+          choices = list("Show All" = "Show All", "Total" = "Total", "Commercial" = "Commercial", "Cars"= "Cars"),
+          selected = "Show All",
           inline = TRUE))
       ),
       
       fluidRow(
-        # Show both for comparison selector for emissions.
-        column(3, checkboxInput(
-          inputId = "showBoth",
-          label = "Show Both (For Comparison)",
-          value = TRUE
-        )),
+        # # Show both for comparison selector for emissions.
+        # column(3, checkboxInput(
+        #   inputId = "showBoth",
+        #   label = "Show Both (For Comparison)",
+        #   value = TRUE
+        # )),
         
         # Country selector for emissions.
-        column(3, selectInput(
+        column(6, selectInput(
           inputId = "country",
           label = "Country:",
           choices = unique(emissions_data$country),
-          selected = "World")),
+          selected = "World",
+          width = "95%"),
+        ),
         
-        # Show both for comparison selector for production.
-        column(3, checkboxInput(
-          inputId = "showAll",
-          label = "Show All (For Comparison)",
-          value = TRUE
-        )),
+        # # Show both for comparison selector for production.
+        # column(3, checkboxInput(
+        #   inputId = "showAll",
+        #   label = "Show All (For Comparison)",
+        #   value = TRUE
+        # )),
         
-        column(3, )
+        column(6, )
       ),
       
       # Year range slider widget.
@@ -265,7 +267,7 @@ part2_widget = function(emissions_data, production_data) {
       # Put together plot based on user selections.
       selected_emissions_plot <- reactive({
         # Show both.
-        if (input$showBoth == TRUE) {
+        if (input$type == "Show All") {
           ggplot(selected_emissions_data(), aes(x = year)) +
             geom_point(aes(y = Total, colour = "Total")) +
             geom_point(aes(y = Gas, colour = "Gas")) +
@@ -346,7 +348,7 @@ part2_widget = function(emissions_data, production_data) {
       # Put together plot based on user selections.
       selected_production_plot <- reactive({
         # Show all.
-        if (input$showAll == TRUE) {
+        if (input$vehicle_type == "Show All") {
           ggplot(production_data, aes(x = year, y = count / 1000000, colour = Type)) +
             geom_point() +
             geom_path() +
