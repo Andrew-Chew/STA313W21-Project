@@ -119,9 +119,33 @@ Globally we produced 5.7 billion tonnes of CO2 from only transportation in 2016.
 
 <!-- Part 2 -->
 ## Unsustainable CO^2^ Emissions
+
+|       With the improvement of technology, rise in human population, and the growth of industry, CO^2^ emissions are rising rapidly. In 2019 alone, annual production-based CO^2^ emissions reached over **36 billion tonnes**, an increase of about 15.8% just a decade ago and over 60.5% since 1990. At current levels, CO^2^ emissions are unsustainable for the environment and if we do not reverse the trend soon, we risk causing irreparable harm to the world we live in.
+|
+|       Perhaps one positive thing that came out of the global financial crisis of 2008 was that annual CO^2^ emissions fell for the first time in many years. One possible explanation is that due to the recession, less people were able to afford buying or using vehicles for transportation causing less vehicles to be on the road and therefore, less CO^2^ to be emitted. This relationship can be seen in the following plots where both annual vehicle production and CO^2^ emissions fell during said period. There appears to be a similar trend happening with the current global COVID-19 pandemic where annual vehicle productions fell drastically while CO^2^ emissions appear to stagnate in this time period. One thing is for certain, less (conventional) vehicles on the road means less CO^2^ emissions.
+|
+|       That being said, relying on disastrous events to curb global warming is not ideal! We have to change our thinking and lifestyles if we want a healthy planet for our future generations. With technological advancements, "greener" alternatives of transportation and energy production are becoming readily available and more cost efficient. Countries as well as individuals are jumping on the "green" bandwagon as the effects of global warming become more and more pronounced. It is a step in the right direction but is it too little too late? Find out how well your country has been doing with respect to CO^2^ emissions using the interactive plot below!
+&nbsp; <!-- blank line -->
+
 ```{r part2 setup, include=FALSE}
 # Data for emissions.
 p2_emissions_data <- read.csv("Data/owid-co2-data.csv")
+
+# Data Exploration.
+# 2019 CO2 emissions.
+c19 <- p2_emissions_data[which(p2_emissions_data$country == "World" & p2_emissions_data$year == 2019), c("co2")]
+c19
+# 2009 CO2 emissions.
+c09 <- p2_emissions_data[which(p2_emissions_data$country == "World" & p2_emissions_data$year == 2009), c("co2")]
+c09
+# 1990 CO2 emissions.
+c90 <- p2_emissions_data[which(p2_emissions_data$country == "World" & p2_emissions_data$year == 1990), c("co2")]
+c90
+# Y-o-Y growth.
+(c19/ c09) - 1
+(c19/ c90) - 1
+
+# Clean data.
 p2_emissions_clean <- p2_emissions_data[c("country", "year", "co2", "cumulative_co2", "gas_co2", "cumulative_gas_co2")]
 
 # Data for production.
