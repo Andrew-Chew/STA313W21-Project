@@ -382,7 +382,8 @@ part2_widget = function(emissions_data, production_data) {
       output$production <- renderPlot({selected_production_plot()})
     },
 
-    options = list(height = 500)
+    # Resize widget so that it fits on the page (instead of vertical scroll).
+    options = list(height = 700)
   )
 }
 ```
@@ -486,7 +487,7 @@ server <- function(input, output, session) {
     }
     },deleteFile = FALSE)
 }
-shinyApp(ui, server)
+shinyApp(ui, server, options = list(height = 700)) # Change this to resize widget.
 ```
 
 ```{r echo=FALSE}
@@ -652,7 +653,7 @@ server <- function(input, output, session){
   }, deleteFile = FALSE)
 }
 
-shinyApp(ui, server)
+shinyApp(ui, server, options = list(height = 700)) # Change this to resize widget.
 
 ```
 
