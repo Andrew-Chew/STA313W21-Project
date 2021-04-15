@@ -40,7 +40,7 @@ According to NASA, climate change is a long-term change in the average weather p
 
 A significant proportion of these emissions comes from just transportation!
 
-```{r, figures-side, fig.show="hold", out.width="50%"}
+```{r echo=FALSE, figures-side, fig.show="hold", out.width="50%"}
 par(mar = c(4, 4, .1, .1))
 data <- read_excel("Data/global emission.1.xlsx") 
 df <- data.frame( 
@@ -395,7 +395,7 @@ part2_widget(p2_emissions_clean, p2_production_clean)
 <!-- Part 3 -->
 ## What's your "Contribution"?
 
-```{r}
+```{r echo=FALSE}
 ui <- fluidPage(
   fluidRow(
     sliderInput("distance", "How far do you travel every day on average? (km)",min = 0, max = 250, value = 125),
@@ -489,7 +489,7 @@ server <- function(input, output, session) {
 shinyApp(ui, server)
 ```
 
-```{r}
+```{r echo=FALSE}
 #the CO2 emission per kilometer for various types of cars
 car_index <- 171
 train_index <- 41
@@ -525,7 +525,7 @@ legend("topleft", legend = c("car","train","flight","motorcycle","bus","subway",
 <!-- Part 4 -->
 ## How can you help?
 
-```{r}
+```{r echo=FALSE}
 ui <- fluidPage(
   fluidRow(
     # setting up radio buttons in UI
