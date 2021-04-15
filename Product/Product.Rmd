@@ -566,7 +566,7 @@ ui <- fluidPage(
     # setting up radio buttons in UI
     radioButtons(inputId = "first_vehicle", 
                  label = "First Vehicle:",
-                 choices =  list("airplane" = 1, "Medium Car (petrol)" = 2, "National Rail" = 3, "Medium Electrical Vehicle" = 4, "Coach" = 5),
+                 choices =  list("Airplane" = 1, "Medium Car (petrol)" = 2, "National Rail" = 3, "Medium Electrical Vehicle" = 4, "Coach" = 5),
                  inline = TRUE,
                  selected = 1)),
   
@@ -574,7 +574,7 @@ ui <- fluidPage(
   fluidRow(
     radioButtons(inputId = "second_vehicle",
                  label = "Second Vehicle:",
-                 choices = list("airplane" = 1, "Medium Car (petrol)" = 2, "National Rail" = 3, "Medium Electrical Vehicle" = 4, "Coach" = 5), 
+                 choices = list("Airplane" = 1, "Medium Car (petrol)" = 2, "National Rail" = 3, "Medium Electrical Vehicle" = 4, "Coach" = 5), 
                  inline = TRUE, 
                  selected = 1)),
   
@@ -593,102 +593,102 @@ ui <- fluidPage(
 
 
 
-server <- function(input, output, session){
+server <- function(input, output){
   # save the 2 inputs in a vector 
   temp_input <- reactive({c(input$first_vehicle, input$second_vehicle)})
   
   # list the conditions for showing the images
-  output$myimage <- renderImage({
+  output$myImage <- renderImage({
     if (identical(temp_input(), c(1,1))){
       return(list(
-        src = "www/f_vs_f.png",
+        src = "www/f vs f.png",
         filetype = "image/png",
-        alt = "Flight vs Flight"
+        alt = "FlightFlight"
       ))
     } else if (identical(temp_input(), c(2,2))){
       return(list(
         src = "www/car_vs_car.png",
         filetype = "image/png",
-        alt = "Car vs Car"
+        alt = "CarCar"
       ))
     } else if (identical(temp_input(), c(3,3))){
       return(list(
         src = "www/train_vs_train.png",
         filetype = "image/png",
-        alt = "Train vs Train"
+        alt = "TrainTrain"
       ))
     } else if (identical(temp_input(), c(4,4))){
       return(list(
         src = "www/EV_vs_EV.png",
         filetype = "image/png",
-        alt = "EV vs EV"
+        alt = "EVEV"
       ))
     } else if (identical(temp_input(), c(5,5))){
       return(list(
         src = "www/bus_vs_bus.png",
         filetype = "image/png",
-        alt = "bus vs bus"
+        alt = "busbus"
       ))
-    } else if (identical(temp_input(), c(1,2))| identical(team_input(), c(1,2))){
+    } else if (identical(temp_input(), c(1,2))| identical(temp_input(), c(1,2))){
       return(list(
         src = "www/car_vs_flight.png",
         filetype = "image/png",
-        alt = "car vs flight"
+        alt = "carflight"
       ))
     } else if (identical(temp_input(), c(1,3))| identical(temp_input() ,c(3,1))){
       return(list(
         src = "www/train_vs_flight.png",
         filetype = "image/png",
-        alt = "train vs flight"
+        alt = "trainflight"
       ))
     } else if (identical(temp_input(), c(1,4))| identical(temp_input(), c(4,1))){
       return(list(
         src = "www/EV_vs_flight.png",
         filetype = "image/png",
-        alt = "flight vs EV"
+        alt = "flightEV"
       ))
     } else if (identical(temp_input() , c(2,3))|identical(temp_input(), c(3,2))){
       return(list(
         src = "www/car_vs_train.png",
         filetype = "image/png",
-        alt = "car vs train"
+        alt = "cartrain"
       ))
     } else if (identical(temp_input(), c(2,4)) | identical(temp_input() , c(4,2))){
       return(list(
         src = "www/car_vs_EV.png",
         filetype = "image/png",
-        alt = "car vs EV"
+        alt = "carEV"
       ))
     } else if (identical(temp_input() ,c(3,4)) | identical(temp_input(),c(4,3))){
       return(list(
         src = "www/train_vs_EV.png",
         filetype = "image/png",
-        alt = "train vs EV"
+        alt = "trainEV"
       ))
-      
+
     } else if (identical(temp_input() , c(1,5))| identical(temp_input(), c(5,1))){
       return(list(
         src = "www/bus_vs_flight.png",
         filetype = "image/png",
-        alt = "bus vs flight"
+        alt = "busflight"
       ))
     } else if (identical(temp_input() , c(2,5))| identical(temp_input(), c(5,2))){
       return(list(
         src = "www/bus_vs_car.png",
         filetype = "image/png",
-        alt = "bus vs car"
+        alt = "buscar"
       ))
     } else if (identical(temp_input(), c(3,5))|identical(temp_input(), c(5,3))){
       return(list(
         src = "www/bus_vs_train.png",
         filetype = "image/png",
-        alt = "bus vs train"
+        alt = "bustrain"
       ))
     } else if (identical(temp_input() ,c(4,5))| identical(temp_input(), c(5,4))){
       return(list(
         src = "www/bus_vs_EV.png",
         filetype = "image/png",
-        alt = "bus vs EV"
+        alt = "busEV"
       ))
     }
   }, deleteFile = FALSE)
