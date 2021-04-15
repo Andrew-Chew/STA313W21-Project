@@ -1,5 +1,5 @@
 ---
-title: "One small change in transportation, one giant leap for the environment"
+title: "One small change in the way we travel, one giant leap for the environment"
 author: "The (Green)Power Rangers: Ruei-Hung Chen, Andrew Chew, Zhenyu Xuan, Elif Yurek"
 date: "16/04/2021"
 output: html_document
@@ -118,7 +118,7 @@ Globally we produced 5.7 billion tonnes of CO2 from only transportation in 2016.
 
 <!-- Part 2 -->
 ## Unsustainable CO^2^ Emissions
-
+|
 |       With the improvement of technology, rise in human population, and the growth of industry, CO^2^ emissions are rising rapidly. In 2019 alone, annual production-based CO^2^ emissions reached over **36 billion tonnes**, an increase of about 15.8% just a decade ago and over 60.5% since 1990. At current levels, CO^2^ emissions are unsustainable for the environment and if we do not reverse the trend soon, we risk causing irreparable harm to the world we live in.
 |
 |       Perhaps one positive thing that came out of the global financial crisis of 2008 was that annual CO^2^ emissions fell for the first time in many years. One possible explanation is that due to the recession, less people were able to afford buying or using vehicles for transportation causing less vehicles to be on the road and therefore, less CO^2^ to be emitted. This relationship can be seen in the following plots where both annual vehicle production and CO^2^ emissions fell during said period. There appears to be a similar trend happening with the current global COVID-19 pandemic where annual vehicle productions fell drastically while CO^2^ emissions appear to stagnate in this time period. One thing is for certain, less (conventional) vehicles on the road means less CO^2^ emissions.
@@ -691,3 +691,41 @@ shinyApp(ui, server, options = list(height = 700)) # Change this to resize widge
 
 <!-- Conclusion -->
 ## Flatten the curve!
+|
+|       According to [Edmunds](https://static.ed.edmunds-media.com/unversioned/img/industry-center/insights/2020-automotive-trends.pdf), the average price of a new car in 2019 is about USD 37,000, not including maintanence and gas costs. On the other hand, you can get a quality bicycle for less than USD 1,000. Furthermore, riding a bike is safer, healthier, and better for the environment. In times like these when we are stuck at home all day, it is important to go outside from time to time, and what better way to do so than to explore new places with a bike! Stretch those legs and enjoy the world! Save your hard-earned cash while saving the environment by switching your main method of travel and join the rapidly growing biking community today! If you are already a part of that, major props to you and thank you on behalf of our beloved planet Earth! If biking is not suitable for your purposes, consider other forms of travelling such as taking the bus or switching to an electric vehicle to reduce your carbon footprint. If enough people adopt cleaner ways to travel, we could potentially reduce annual CO^2^ emissions significantly enough to curb global warming. Stay safe and help flatten the curves!
+&nbsp; <!-- blank line -->
+
+```{r conclusion, echo=FALSE, fig.align="center", message=FALSE, warning=FALSE}
+# Add some data.
+f_t_c <- p2_emissions_data[which(p2_emissions_data$country == "World" & p2_emissions_data$year >= 1900), c("year", "co2")]
+for (i in seq(1:11)) {
+  f_t_c[nrow(f_t_c) + 1, ] = c(2019 + i, f_t_c[nrow(f_t_c), 2] * (0.999 - (0.005 * i)))
+}
+
+# Plot.
+ggplot(f_t_c, aes(x = year, y = co2)) +
+  geom_point(data = f_t_c[which(f_t_c$year <= 2019), ], size = 0.75) +
+  geom_point(data = f_t_c[which(f_t_c$year > 2019), ], color = "red", size = 0.75) +
+  geom_path(data = f_t_c[which(f_t_c$year <= 2019), ]) +
+  geom_path(data = f_t_c[which(f_t_c$year >= 2019), ], color = "red") +
+  geom_smooth(color = "#1b9e77", lwd = 0.75, se = F) +
+  geom_smooth(data = f_t_c[which(f_t_c$year <= 2019), ], lwd = 0.75, se = F) +
+  scale_x_continuous(breaks = c(seq(1900, 2030, by = 10)), labels = c(seq(1900, 2030, by = 10))) +
+  ylim(0, 40000) +
+  labs(title = "Flatten The (Other) Curve!",
+       subtitle = "New data points in red, new emissions time trend in green",
+       x = "Year",
+       y = expression(paste("CO"^"2", " Emissions (million tonnes)")),
+       caption = "An ideal senario - The (Green)Power Rangers.") +
+  theme_wsj() +
+  theme(plot.title = element_text(size = rel(0.7), hjust = 0.5),
+        plot.subtitle = element_text(size = rel(0.4), hjust = 0.5),
+        plot.caption = element_text(size = rel(0.4)),
+        axis.title = element_text(size = rel(0.4)),
+        axis.text = element_text(size = rel(0.6)),
+        legend.position = "top",
+        legend.justification = "center")
+```
+&nbsp; <!-- blank line -->
+
+|                                                     **One small change in the way we travel, one giant leap for the environment!**
