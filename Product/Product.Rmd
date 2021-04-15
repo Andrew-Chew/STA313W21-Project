@@ -544,10 +544,16 @@ ui <- fluidPage(
                  selected = 1)),
   
   # setting up imageOutput in the UI 
-  fluidRow(
+  mainPanel(
     # Use imageOutput to place the image on the page
-    imageOutput("myImage"),
-    ),
+    imageOutput(outputId = "myImage")
+    )
+  
+  # fluidRow(
+  #   # Print text at the end of this section to provide accurate comparison
+  #   textOutput(outputId = "word")
+  #   
+  # )
 )
 
 
@@ -556,6 +562,7 @@ server <- function(input, output, session){
   # save the 2 inputs in a vector 
   temp_input <- reactive({c(input$first_vehicle, input$second_vehicle)})
   
+  # list the conditions for showing the images
   output$myimage <- renderImage({
     if (identical(temp_input(), c(1,1))){
       return(list(
@@ -636,13 +643,13 @@ server <- function(input, output, session){
         filetype = "image/png",
         alt = "bus vs car"
       ))
-    } else if (identical(temp_input, c(3,5))|identical(temp_input(), c(5,3))){
+    } else if (identical(temp_input(), c(3,5))|identical(temp_input(), c(5,3))){
       return(list(
         src = "www/bus_vs_train.png",
         filetype = "image/png",
         alt = "bus vs train"
       ))
-    } else if (identical(temp_input ,c(4,5))| identical(temp_input(), c(5,4))){
+    } else if (identical(temp_input() ,c(4,5))| identical(temp_input(), c(5,4))){
       return(list(
         src = "www/bus_vs_EV.png",
         filetype = "image/png",
@@ -650,6 +657,17 @@ server <- function(input, output, session){
       ))
     }
   }, deleteFile = FALSE)
+  
+  # # Define accurate text output
+  # calculation <- reactive({
+  #   if (identical(temp_input(), c(1,1)) | identical(temp_input(), c(2,2)) | identical(temp_input(), c(3,3)) |identical(temp_input(), c(4,4)) | identical(temp_input(), c(5,5))){
+  #     ratio = 1
+  #   } else if (identical(temp_input(), c(1,2))| identical(team_input(), c(1,2))){
+  #     ratio = 
+  #   }
+  # 
+  # })
+
 }
 
 shinyApp(ui, server)
