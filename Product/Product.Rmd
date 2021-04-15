@@ -381,7 +381,8 @@ part2_widget = function(emissions_data, production_data) {
       output$production <- renderPlot({selected_production_plot()})
     },
 
-    options = list(height = 500)
+    # Resize widget so that it fits on the page (instead of vertical scroll).
+    options = list(height = 700)
   )
 }
 ```
@@ -492,7 +493,7 @@ server <- function(input, output, session) {
     }
     },deleteFile = FALSE)
 }
-shinyApp(ui, server)
+shinyApp(ui, server, options = list(height = 700)) # Change this to resize widget.
 ```
 
 Based on the CO2 emissions per passenger per kilometer data, we can also find out that the impact of choosing alternative means of transport. Also, you can compare all types of vehicles with the following graph. The different color hues to represent categorical attributes – types of primary vehicles. The slope of each line will be the amount of the CO2 emission per person per kilometer release with one type of vehicle. From the visualization, we can obviously see the difference among various types of vehicles along with the time. This can reflect the impacts on choosing alternative means of transport.
@@ -660,7 +661,7 @@ server <- function(input, output, session){
   }, deleteFile = FALSE)
 }
 
-shinyApp(ui, server)
+shinyApp(ui, server, options = list(height = 700)) # Change this to resize widget.
 
 ```
 
