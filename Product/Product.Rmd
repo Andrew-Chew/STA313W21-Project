@@ -494,9 +494,10 @@ server <- function(input, output, session) {
     },deleteFile = FALSE)
 }
 shinyApp(ui, server, options = list(height = 700)) # Change this to resize widget.
+
 ```
 
-Based on the CO2 emissions per passenger per kilometer data, we can also find out that the impact of choosing alternative means of transport. Also, you can compare all types of vehicles with the following graph. The different color hues to represent categorical attributes – types of primary vehicles. The slope of each line will be the amount of the CO2 emission per person per kilometer release with one type of vehicle. From the visualization, we can obviously see the difference among various types of vehicles along with the time. This can reflect the impacts on choosing alternative means of transport.
+Based on the CO2 emissions per passenger per kilometer data, we can also find out that the impact of choosing alternative means of transport. Also, you can compare all types of vehicles with the following graph. The different color hues to represent categorical attributes – types of primary vehicles. The slope of each line will be the amount of the CO2 emission per person per kilometer release with one type of vehicle. From the visualization, you can see the total CO2 emissions you release if you choose different vehicle to daily commute 1 kilometer for 5 years. We can obviously see the difference among various types of vehicles along with the time. This can reflect the impacts on choosing alternative means of transport.
 
 ```{r echo=FALSE}
 #the CO2 emission per kilometer for various types of cars
@@ -510,16 +511,16 @@ bike_index <- 0
 
 #calculate the CO2 emission for each vehicle
 time = c(2021,2022,2023,2024,2025)
-CO2_emission_car <- car_index*(time - 2021)
-CO2_emission_train <- train_index*(time - 2021)
-CO2_emission_flight <- flight_index*(time - 2021)
-CO2_emission_motorcycle <- motorcycle_index*(time - 2021)
-CO2_emission_bus <- bus_index*(time - 2021)
-CO2_emission_subway <- subway_index*(time - 2021)
-CO2_emission_bike <- bike_index*(time - 2021)
+CO2_emission_car <- car_index*(time - 2021)*365
+CO2_emission_train <- train_index*(time - 2021)*365
+CO2_emission_flight <- flight_index*(time - 2021)*365
+CO2_emission_motorcycle <- motorcycle_index*(time - 2021)*365
+CO2_emission_bus <- bus_index*(time - 2021)*365
+CO2_emission_subway <- subway_index*(time - 2021)*365
+CO2_emission_bike <- bike_index*(time - 2021)*365
 
 #plot the graph
-plot(CO2_emission_car,type = "o",col = "red", xlab = "Time", ylab = "CO2 emission", 
+plot(CO2_emission_car,type = "o",col = "red", xlab = "Time (year)", ylab = "CO2 emission (g)", 
    main = "Impact of choosing alternative means of transports",lwd=3)
 lines(CO2_emission_train, type = "o", col = "orange",lwd=3)
 lines(CO2_emission_flight, type = "o", col = "blue",lwd=3)
