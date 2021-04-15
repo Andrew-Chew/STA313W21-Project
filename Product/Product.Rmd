@@ -418,14 +418,13 @@ part2_widget(p2_emissions_clean, p2_production_clean)
 
 <!-- Part 3 -->
 ## What's your "Contribution"?
-
-Let’s conduct a survey on what type of vehicle you use in your daily life and how far you guys will commute every day on average to see the level of Co2 emissions you release. There is a slider bar which can be used to input the distance and there are multiple choices of various types of vehicle in this second question of the survey. You can only make one choice in this part, since we want to see the Co2 emissions related to the primary vehicles you use in your daily life.
-
-
-Based on the CO2 emissions per passenger per kilometer data, we can easily calculate the CO2 emission level they release by multiplying the CO2 emission of various vehicles per kilometer by the distance you input. You can also see the total CO2 emissions you release. You can change the choices of primary vehicles and distance, the result will be changed.
-
-The result will also be reflected on the interactive visualization. There are several chimneys at the bottom of the survey. And there is smoke with different color hues which are red from the darkest to the lightest to stand for different levels of the CO2 emission levels from the highest to the lowest. If CO2 emissions are less than 2500g, then it corresponds to extremely low level; if CO2 emissions are greater than 2500g and less than 5000g, which means low level; for CO2 greater than 5000g and less than 7500g, the level will be medium; if the results are greater than 7500g and less than 10000g, it will denote high level; finally, if CO2 emissions are greater than 10000g, the result will be regarded as extremely high level of emissions.
-
+|
+|       Let’s conduct a survey on what type of vehicle you use in your daily life and how far you guys will commute every day on average to see the level of Co2 emissions you release. There is a slider bar which can be used to input the distance and there are multiple choices of various types of vehicle in this second question of the survey. You can only make one choice in this part, since we want to see the Co2 emissions related to the primary vehicles you use in your daily life.
+|
+|       Based on the CO2 emissions per passenger per kilometer data, we can easily calculate the CO2 emission level they release by multiplying the CO2 emission of various vehicles per kilometer by the distance you input. You can also see the total CO2 emissions you release. You can change the choices of primary vehicles and distance, the result will be changed.
+|
+|       The result will also be reflected on the interactive visualization. There are several chimneys at the bottom of the survey. And there is smoke with different color hues which are red from the darkest to the lightest to stand for different levels of the CO2 emission levels from the highest to the lowest. If CO2 emissions are less than 2500g, then it corresponds to extremely low level; if CO2 emissions are greater than 2500g and less than 5000g, which means low level; for CO2 greater than 5000g and less than 7500g, the level will be medium; if the results are greater than 7500g and less than 10000g, it will denote high level; finally, if CO2 emissions are greater than 10000g, the result will be regarded as extremely high level of emissions.
+|
 ```{r echo=FALSE}
 ui <- fluidPage(
   fluidRow(
@@ -521,7 +520,7 @@ shinyApp(ui, server, options = list(height = 700)) # Change this to resize widge
 
 ```
 
-Based on the CO2 emissions per passenger per kilometer data, we can also find out that the impact of choosing alternative means of transport. Also, you can compare all types of vehicles with the following graph. The different color hues to represent categorical attributes – types of primary vehicles. The slope of each line will be the amount of the CO2 emission per person per kilometer release with one type of vehicle. From the visualization, you can see the total CO2 emissions you release if you choose different vehicle to daily commute 1 kilometer for 5 years. We can obviously see the difference among various types of vehicles along with the time. This can reflect the impacts on choosing alternative means of transport.
+|       Based on the CO2 emissions per passenger per kilometer data, we can also find out that the impact of choosing alternative means of transport. Also, you can compare all types of vehicles with the following graph. The different color hues to represent categorical attributes – types of primary vehicles. The slope of each line will be the amount of the CO2 emission per person per kilometer release with one type of vehicle. From the visualization, you can see the total CO2 emissions you release if you choose different vehicle to daily commute 1 kilometer for 5 years. We can obviously see the difference among various types of vehicles along with the time. This can reflect the impacts on choosing alternative means of transport.
 
 ```{r echo=FALSE}
 #the CO2 emission per kilometer for various types of cars
