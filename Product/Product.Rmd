@@ -34,10 +34,8 @@ library(tidyr)
 <!-- Part 1 -->
 ## Climate Change & CO^2^ 101
 <!-- <<<<<<< HEAD -->
-What is climate change?
-According to [NASA](https://climate.nasa.gov/resources/global-warming-vs-climate-change/), climate change is a long-term change in the average weather patterns that have come to define Earth’s local, regional and global climates. These changes have a broad range of observed effects that are synonymous with the term.Changes observed in Earth’s climate since the early 20th century are primarily driven by human activities, particularly fossil fuel burning, which increases heat-trapping greenhouse gas levels in Earth’s atmosphere, raising Earth’s average surface temperature. These human-produced temperature increases are commonly referred to as global warming. Natural processes can also contribute to climate change, including internal variability (e.g., cyclical ocean patterns like El Niño, La Niña and the Pacific Decadal Oscillation) and external forcings (e.g., volcanic activity, changes in the Sun’s energy output, variations in Earth’s orbit)
-
-A significant proportion of these emissions comes from just transportation!
+|
+|       What is climate change? According to [NASA](https://climate.nasa.gov/resources/global-warming-vs-climate-change/), climate change is a long-term change in the average weather patterns that have come to define Earth’s local, regional and global climates. These changes have a broad range of observed effects that are synonymous with the term.Changes observed in Earth’s climate since the early 20th century are primarily driven by human activities, particularly fossil fuel burning, which increases heat-trapping greenhouse gas levels in Earth’s atmosphere, raising Earth’s average surface temperature. These human-produced temperature increases are commonly referred to as global warming. Natural processes can also contribute to climate change, including internal variability (e.g., cyclical ocean patterns like El Niño, La Niña and the Pacific Decadal Oscillation) and external forcings (e.g., volcanic activity, changes in the Sun’s energy output, variations in Earth’s orbit). A significant proportion of these emissions comes from just transportation!
 
 ```{r echo=FALSE, figures-side, fig.show="hold", fig.align="center", out.width="50%"}
 par(mar = c(4, 4, .1, .1))
@@ -96,7 +94,7 @@ transport_pie <- highchart () %>%
       colorByPoint = TRUE
       )) %>%
   hc_title(
-    text = "Global CO2 Emissions from Transportation Types in 2016"
+    text = "Proportion of CO2 Emissions by Transportation Types in 2016"
     ) 
 
 total_pie
@@ -104,18 +102,18 @@ transport_pie
 
 ```
 
-Many people own cars in Canada. Did you know that the average Canadian vehicle, which burns 2 000 L of gasoline every year, releases about 4 600 kg of CO2 into the atmosphere according to [Natural Resources Canada](https://www.nrcan.gc.ca/sites/www.nrcan.gc.ca/files/oee/pdf/transportation/fuel-efficient-technologies/autosmart_factsheet_6_e.pdf)? 
-This number might not mean much to you. So let's see how many trees are working to absorb our emissions. 
-According to [US Department of Agriculture](https://www.usda.gov/media/blog/2015/03/17/power-one-tree-very-air-we-breathe), in one year a mature tree will absorb more than 48 pounds (roughly 22 kg) of CO2 from the atmosphere and release oxygen in exchange.  
+|       Many people own cars in Canada. Did you know that the average Canadian vehicle, which burns 2 000 L of gasoline every year, releases about 4 600 kg of CO2 into the atmosphere according to [Natural Resources Canada](https://www.nrcan.gc.ca/sites/www.nrcan.gc.ca/files/oee/pdf/transportation/fuel-efficient-technologies/autosmart_factsheet_6_e.pdf)? This number might not mean much to you. So let's see how many trees are working to absorb our emissions. According to [US Department of Agriculture](https://www.usda.gov/media/blog/2015/03/17/power-one-tree-very-air-we-breathe), in one year a mature tree will absorb more than 48 pounds (roughly 22 kg) of CO2 from the atmosphere and release oxygen in exchange.  
 
-![How many trees needed to absorb CO2 emissions from 1 car](www/treesncar.png)
-209 trees work to absorb just 1 average vehicle's CO2 emissions.
-Globally we produced 5.7 billion tonnes of CO2 from only transportation in 2016. To absorb this from the atmosphere, we need 259 billion trees. World's largest forest Amazon rain forest roughly have 390 billion trees according to [EurekAlert!](https://www.eurekalert.org/pub_releases/2013-10/fm-fms101413.php). We would need about 66% of the trees in Amazon to absorb the CO2 emissions produced only from transportation. 
+![](www/treesncar.png)
 
+|       209 trees work to absorb just 1 average vehicle's CO2 emissions. Globally we produced 5.7 billion tonnes of CO2 from only transportation in 2016. To absorb this from the atmosphere, we need 259 billion trees. World's largest forest Amazon rain forest roughly have 390 billion trees according to [EurekAlert!](https://www.eurekalert.org/pub_releases/2013-10/fm-fms101413.php). We would need about 66% of the trees in Amazon to absorb the CO2 emissions produced only from transportation. 
 
-![Amazon forest in the world map](www/map_amazon.png)
-*image taken from [Ocean Futures](http://www.oceanfutures.org/exploration/expeditions/amazon)
-=======
+<center>
+![Amazon forest on the world map](www/map_amazon.png)
+</center>
+<center>
+*image sourced from [Ocean Futures](http://www.oceanfutures.org/exploration/expeditions/amazon)
+</center>
 
 <!-- Part 2 -->
 ## Unsustainable CO^2^ Emissions
@@ -431,24 +429,28 @@ part2_widget(p2_emissions_clean, p2_production_clean)
 ```{r echo=FALSE, fig.align="center", message=FALSE, warning=FALSE}
 ui <- fluidPage(
   fluidRow(
-    sliderInput("distance", "How far do you travel every day on average? (km)",min = 0, max = 250, value = 125),
+    column(12, align = "center",
+    sliderInput("distance", "How far do you travel every day on average? (km)",min = 0, max = 250, value = 125)),
   ),
   
   fluidRow(
+    column(12, align = "center",
     radioButtons(
           inputId = "choice",
           label = "What type of primary vehicle do you use?:",
           choices = list("Car" = 1, "Train" = 2,"Plane" = 3, "Motorcycle" = 4, "Bus" = 5, "Subway" = 6, "Bicycle" = 7), 
-          inline = TRUE)
+          inline = TRUE))
     ),
 
    fluidRow(
+     column(12, align = "center",
      textOutput("word"),
-     textOutput("calculation"),
+     textOutput("calculation")),
      ),
   
   fluidRow(
-    imageOutput("factory"),
+    column(12, align = "center",
+    imageOutput("factory")),
     ),
 )
 
@@ -576,41 +578,44 @@ library(png)
 ui <- fluidPage(
   fluidRow(
      # Use imageOutput to place the image on the page
-    imageOutput(outputId = "myImage")
+    column(12, align = "center",
+    imageOutput(outputId = "myImage"))
     
     ),
   
   
   fluidRow(
     # Print text at the end of this section to provide accurate comparison
+    column(12, align = "center",
     textOutput(outputId = "word"),
     tags$head(tags$style("#word{color: black;
                                  font-size: 20px;
                                  font-style: italic;
                                  }"
-                         ))
-   
+                         )))
     
     ),
   
   # setting up imageOutput in the UI 
   fluidRow(
+    column(12, align = "center",
     # setting up radio buttons in UI
     radioButtons(inputId = "first_vehicle", 
                  label = "First Vehicle:",
                  choices =  list("Airplane" = 1, "Medium Car (petrol)" = 2, "National Rail" = 3, "Medium Electrical Vehicle" = 4, "Coach" = 5),
                  inline = TRUE,
-                 selected = 1)
+                 selected = 1))
     
     ),
 
   fluidRow(
     # setting up the radio butons for the second vehicle for comparison
+    column(12, align = "center",
     radioButtons(inputId = "second_vehicle",
                  label = "Second Vehicle:",
                  choices = list("Airplane" = 1, "Medium Car (petrol)" = 2, "National Rail" = 3, "Medium Electrical Vehicle" = 4, "Coach" = 5), 
                  inline = TRUE, 
-                 selected = 1)
+                 selected = 1))
     
   )
 
@@ -810,7 +815,7 @@ server <- function(input, output, session){
 
 }
 
-shinyApp(ui, server, options = list(height = 700, width = 1000)) # Change this to resize widget.
+shinyApp(ui, server, options = list(height = 600, width = 1000)) # Change this to resize widget.
 
 ```
 
