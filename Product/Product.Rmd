@@ -560,36 +560,58 @@ legend("topleft", legend = c("car","train","flight","motorcycle","bus","subway",
 
 <!-- Part 4 -->
 ## How can you help?
+|
+|       Now we understand what climate change is and how much CO2 emission we contribute to the environment through transportation everyday. As a responsible inhabitant to this planet, lets try to think of ways to reduce the level of air pollution we cause to the environment!
+
+|
+|       According to a study by [Clean Energy Canada](https://www.equiterre.org/sites/fichiers/fmm_transportation_recs.pdf) in 2016, about 15.4 million people commute regularly. Amongst the commuters, 74% of them choose to commute by private automobile. However, is commuting by private vehicle considered **Environmental Friendly**? Is there an alternative to driving that would cause less harm to our environment? If everyone in Canada decide to make a small change to their daily commuting habit, after multiplying this reduction of CO^2^ by 15.4 million times, it will make a **huge** difference and impact positively to our environment.
+
+|
+|       In the section below, we provide an interactive activity that allows you to compare the CO^2^ emission per kilometer of any two vehicles of your choice. The graphic shows **an approximation** of CO^2^ emission ratio between the two vehicles, presented by number of people standing in front. The less people standing in front of the vehicle type, the **more selfish** the vehicle is! (more CO^2^ is produce by that type of vehicle with less people using it). Underneath the graphic, we also calculate the exact ratio for you and summarize the result to the vehicles you pick. Find out if you are **responsible** for the global warming and explore any possible alternatives that are better than your current commuting tools.
+|
+|
 
 ```{r echo=FALSE}
 library(png)
 ui <- fluidPage(
+  fluidRow(
+     # Use imageOutput to place the image on the page
+    imageOutput(outputId = "myImage")
+    
+    ),
+  
+  
+  fluidRow(
+    # Print text at the end of this section to provide accurate comparison
+    textOutput(outputId = "word"),
+    tags$head(tags$style("#word{color: black;
+                                 font-size: 20px;
+                                 font-style: italic;
+                                 }"
+                         ))
+   
+    
+    ),
+  
+  # setting up imageOutput in the UI 
   fluidRow(
     # setting up radio buttons in UI
     radioButtons(inputId = "first_vehicle", 
                  label = "First Vehicle:",
                  choices =  list("Airplane" = 1, "Medium Car (petrol)" = 2, "National Rail" = 3, "Medium Electrical Vehicle" = 4, "Coach" = 5),
                  inline = TRUE,
-                 selected = 1)),
-  
-  # setting up the radio butons for the second vehicle for comparison
+                 selected = 1)
+    
+    ),
+
   fluidRow(
+    # setting up the radio butons for the second vehicle for comparison
     radioButtons(inputId = "second_vehicle",
                  label = "Second Vehicle:",
                  choices = list("Airplane" = 1, "Medium Car (petrol)" = 2, "National Rail" = 3, "Medium Electrical Vehicle" = 4, "Coach" = 5), 
                  inline = TRUE, 
-                 selected = 1)),
-  
-  # setting up imageOutput in the UI 
-  fluidRow(
-    # Use imageOutput to place the image on the page
-
-    imageOutput(outputId = "myImage")
-    ),
-
-  fluidRow(
-    # Print text at the end of this section to provide accurate comparison
-    textOutput(outputId = "word")
+                 selected = 1)
+    
   )
 
    
@@ -791,6 +813,9 @@ server <- function(input, output, session){
 shinyApp(ui, server, options = list(height = 700, width = 1000)) # Change this to resize widget.
 
 ```
+
+|
+|       After some exploration, you probably noticed that driving a personal vehicle is not the best way to commute considering its high CO^2^ emission level. You should also noticed that all public transportation, excluding airplane, are more environmentally friendly comparing to traditional personal vehicles. In this particular activity, we only selected a few transportation types to include into our little vehicle comparison, however, there are many other ways to commute and make less carbon emission into the air. For example- riding a bicycle! Vehicles like bicycles are the ideal commuting tools that doesn't cause air pollution during the commute, however they also face serious geographic constraints that only allow short distance travels. Thus, the lesson here is to avoid using personal vehicle and take advantage of the public transportation as much as possible. In situation when we have to drive a car, act **selflessly** by sharing rides with others so we contribute less Co^2^ to our environment per person.
 
 <!-- Conclusion -->
 ## Flatten the curve!
